@@ -1,0 +1,17 @@
+[
+  {"id":1,"title":"Basic Animation – Time Management Course","cat":"Basic Animation","year":"2025","fmt":"Tutorial","link":"#","star":true,"tags":"education,time management,soft skills","desc":"Animated explainer for time management fundamentals"},
+  {"id":2,"title":"Advanced Animation – Bank Campaign","cat":"Advanced Animation","year":"2025","fmt":"Promo","link":"#","star":true,"tags":"finance,banking,campaign","desc":"Full campaign animation for banking product launch"},
+  {"id":3,"title":"Instructor Led – Leadership Course","cat":"Instructor Led","year":"2025","fmt":"Corporate Film","link":"#","star":true,"tags":"education,leadership","desc":"On-camera instructor delivering leadership training"},
+  {"id":4,"title":"Medium Collage – Quarterly Summary","cat":"Medium Collage","year":"2024","fmt":"Reel","link":"#","star":false,"tags":"tech,quarterly,recap","desc":"Mixed-media quarterly performance recap"},
+  {"id":5,"title":"Advanced Drama – Health Awareness Campaign","cat":"Advanced Drama","year":"2025","fmt":"Documentary","link":"#","star":true,"tags":"healthcare,awareness,drama","desc":"Scripted drama for public health awareness"},
+  {"id":6,"title":"Motion Graphics – Real Estate App Promo","cat":"Motion Graphics","year":"2025","fmt":"Promo","link":"#","star":true,"tags":"real estate,app,motion","desc":"Animated promo for a real estate mobile app"},
+  {"id":7,"title":"Medium Animation – SaaS Product Explainer","cat":"Medium Animation","year":"2024","fmt":"Product Video","link":"#","star":false,"tags":"tech,saas,explainer","desc":"Product explainer animation for SaaS platform"},
+  {"id":8,"title":"Advanced Collage – Annual Showreel 2024","cat":"Advanced Collage","year":"2024","fmt":"Reel","link":"#","star":false,"tags":"showreel,annual,highlights","desc":"Year-end compilation of best production work"},
+  {"id":9,"title":"Medium Drama – Ramadan Ad","cat":"Medium Drama","year":"2024","fmt":"Promo","link":"#","star":false,"tags":"ramadan,food,ad","desc":"Seasonal Ramadan ad with dramatic storytelling"},
+  {"id":10,"title":"Instructor Led – Digital Marketing Course","cat":"Instructor Led","year":"2023","fmt":"Tutorial","link":"#","star":true,"tags":"education,digital marketing","desc":"Full course with on-camera marketing instructor"},
+  {"id":11,"title":"Motion Graphics – Logo Animation","cat":"Motion Graphics","year":"2023","fmt":"Animation","link":"#","star":false,"tags":"branding,logo,intro","desc":"Brand logo reveal animation"},
+  {"id":12,"title":"Projects – Client Onboarding Package","cat":"Projects","year":"2025","fmt":"Corporate Film","link":"#","star":true,"tags":"tech,onboarding,corporate","desc":"Complete onboarding video package for new clients"},
+  {"id":13,"title":"Promos – Summer Campaign 2025","cat":"Promos","year":"2025","fmt":"Promo","link":"#","star":false,"tags":"summer,campaign,promo","desc":"Promotional video for summer campaign"},
+  {"id":14,"title":"AI Videos – AI-Generated Product Demo","cat":"AI Videos","year":"2025","fmt":"Product Video","link":"#","star":false,"tags":"ai,demo,product","desc":"AI-generated product walkthrough video"},
+  {"id":15,"title":"Showreel – almentor Production Reel 2025","cat":"Showreel","year":"2025","fmt":"Reel","link":"#","star":true,"tags":"showreel,portfolio,best work","desc":"Official almentor production showreel"}
+]

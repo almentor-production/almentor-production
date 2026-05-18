@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>almentor – Media Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F5F5;--s1:#FFFFFF;--s2:#F0F0F0;--s3:#E8E8E8;--b1:#E0E0E0;--b2:#CCCCCC;--acc:#E50914;--acc2:rgba(229,9,20,0.08);--t1:#1A1A1A;--t2:#555555;--t3:#888888;--sw:220px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;font-size:14px;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:'DM Sans',sans-serif}
+input,select{font-family:'DM Sans',sans-serif}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+
+/* ── SIDEBAR ─────────────────── */
+.sidebar{width:var(--sw);min-height:100vh;background:#1A1A1A;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:20}
+.logo{padding:20px 16px 16px;border-bottom:1px solid #2a2a2a;display:flex;flex-direction:column;align-items:flex-start}
+.logo-svg{height:22px;margin-bottom:8px;fill:#fff}
+.logo-sub{font-size:9.5px;color:#666;letter-spacing:1.5px;text-transform:uppercase}
+.nav{flex:1;padding:14px 10px;overflow-y:auto}
+.nav-label{font-size:9.5px;font-weight:600;color:#666;letter-spacing:1.8px;text-transform:uppercase;padding:0 8px;margin:16px 0 6px}
+.nav-label:first-child{margin-top:0}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:#999;font-weight:400;transition:all .15s;margin-bottom:1px;border:none;background:none;width:100%;text-align:left}
+.ni:hover{background:#252525;color:#fff}
+.ni.active{background:rgba(229,9,20,0.15);color:#E50914;font-weight:500}
+.ni .ic{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ni .badge{margin-left:auto;font-size:10px;background:#2a2a2a;padding:1px 7px;border-radius:20px;color:#666}
+.ni.active .badge{background:rgba(229,9,20,0.15);color:#E50914}
+.sidebar-foot{padding:16px;border-top:1px solid #2a2a2a}
+.sidebar-foot-info{font-size:10px;color:#555;text-align:center;line-height:1.5}
+
+/* ── MAIN ─────────────────── */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(245,245,245,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--b1);padding:14px 26px;display:flex;align-items:center;gap:14px}
+.page-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;flex-shrink:0}
+.search-wrap{flex:1;max-width:380px;position:relative}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3)}
+.search{width:100%;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;padding:8px 12px 8px 34px;outline:none;transition:border-color .15s}
+.search:focus{border-color:var(--b2)}
+.search::placeholder{color:var(--t3)}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.sort-sel{background:var(--s1);border:1px solid var(--b1);border-radius:7px;color:var(--t2);font-size:12px;padding:7px 10px;outline:none}
+
+.chips{padding:12px 26px;display:flex;gap:7px;border-bottom:1px solid var(--b1);flex-wrap:wrap}
+.chip{padding:5px 13px;border-radius:20px;border:1px solid var(--b1);font-size:12px;color:var(--t3);cursor:pointer;background:none;transition:all .15s}
+.chip:hover{border-color:var(--b2);color:var(--t1)}
+.chip.on{border-color:var(--acc);color:var(--acc);background:var(--acc2)}
+
+.content{padding:22px 26px;flex:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:22px}
+.stat{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:14px 16px}
+.stat-n{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--t1)}
+.stat-l{font-size:11px;color:var(--t3);margin-top:2px}
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.result-txt{font-size:12px;color:var(--t3)}
+
+/* ── GRID ─────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;transition:all .2s;animation:fadeUp .3s ease;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{border-color:var(--b2);transform:translateY(-2px)}
+.thumb{width:100%;aspect-ratio:16/9;background:#2a2a2a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
+.thumb-bg{position:absolute;inset:0;opacity:.05;background:radial-gradient(circle at 60% 40%, #000 0%, transparent 70%)}
+.thumb svg{opacity:.35;transition:opacity .2s;width:34px;height:34px}
+.card:hover .thumb svg{opacity:.5}
+.cat-tag{position:absolute;top:9px;left:9px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;letter-spacing:.3px}
+.star-tag{position:absolute;top:9px;right:9px;font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(255,196,0,.15);color:#FFC400;border:1px solid rgba(255,196,0,.25)}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .2s}
+.card:hover .overlay{background:rgba(0,0,0,.35)}
+.play{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.8);transition:all .2s}
+.card:hover .play{opacity:1;transform:scale(1)}
+.play svg{margin-left:2px}
+.cbody{padding:13px 14px}
+.ctitle{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:8px;line-height:1.45}
+.ctags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.tag{font-size:10.5px;padding:3px 8px;border-radius:4px;background:var(--s2);color:var(--t3);border:1px solid var(--b1)}
+.cfoot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--b1);padding-top:10px}
+.yr{font-size:11px;color:var(--t3)}
+.cfoot-actions{display:flex;gap:5px;align-items:center}
+.copy-btn{font-size:11.5px;color:var(--acc);background:var(--acc2);border:none;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;transition:opacity .15s}
+.copy-btn:hover{opacity:.8}
+.empty{text-align:center;padding:80px 20px;grid-column:1/-1}
+.empty svg{opacity:.15;margin-bottom:12px}
+.empty p{font-size:13px;color:var(--t3)}
+
+/* ── CATEGORY COLORS ─────── */
+.c-proj{background:rgba(229,9,20,.15);color:#E50914}
+.c-anim-basic{background:rgba(139,92,246,.15);color:#A78BFA}
+.c-anim-mid{background:rgba(167,92,246,.18);color:#B794F6}
+.c-anim-adv{background:rgba(109,40,217,.2);color:#8B5CF6}
+.c-collage-mid{background:rgba(245,158,11,.15);color:#F59E0B}
+.c-collage-adv{background:rgba(234,88,12,.18);color:#EA580C}
+.c-instructor{background:rgba(16,185,129,.15);color:#10B981}
+.c-drama-mid{background:rgba(59,130,246,.15);color:#3B82F6}
+.c-drama-adv{background:rgba(37,99,235,.2);color:#2563EB}
+.c-motion{background:rgba(236,72,153,.15);color:#EC4899}
+.c-promo{background:rgba(251,146,60,.15);color:#FB923C}
+.c-ai{background:rgba(6,182,212,.15);color:#06B6D4}
+.c-show{background:rgba(168,85,247,.15);color:#A855F7}
+
+/* ── PREVIEW MODAL ─────── */
+.preview-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.preview-bg.open{display:flex}
+.preview-box{background:#111;border-radius:14px;width:720px;max-width:95vw;animation:mIn .25s ease;overflow:hidden}
+@keyframes mIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.preview-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #333}
+.preview-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.preview-close{background:none;border:none;color:#999;font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;transition:background .15s;flex-shrink:0}
+.preview-close:hover{background:#333;color:#fff}
+.preview-frame{width:100%;aspect-ratio:16/9;border:none}
+.preview-nolink{padding:60px 20px;text-align:center;color:#666;font-size:13px}
+.preview-desc{padding:12px 18px;color:#aaa;font-size:12px;border-top:1px solid #222;line-height:1.5}
+.preview-tags{padding:8px 18px 14px;display:flex;gap:5px;flex-wrap:wrap}
+.preview-tags .tag{background:#222;border-color:#333;color:#888}
+
+/* ── LOADING ─────── */
+.loading{text-align:center;padding:80px 20px;grid-column:1/-1}
+.loading p{font-size:13px;color:var(--t3)}
+.spinner{width:28px;height:28px;border:3px solid var(--b1);border-top-color:var(--acc);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z" fill="#fff"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
+    <div class="logo-sub">MEDIA VAULT</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Browse</div>
+    <button class="ni active" data-cat="all" onclick="setCat('all')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      All Assets <span class="badge" id="cnt-all">0</span>
+    </button>
+    <button class="ni" data-cat="star" onclick="setCat('star')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+      Best for Proposals <span class="badge" id="cnt-star">0</span>
+    </button>
+
+    <div class="nav-label">Production Types</div>
+    <button class="ni" data-cat="Projects" onclick="setCat('Projects')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+      Projects <span class="badge" id="cnt-Projects">0</span>
+    </button>
+    <button class="ni" data-cat="Basic Animation" onclick="setCat('Basic Animation')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></span>
+      Basic Animation <span class="badge" id="cnt-Basic Animation">0</span>
+    </button>
+    <button class="ni" data-cat="Medium Animation" onclick="setCat('Medium Animation')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></span>
+      Medium Animation <span class="badge" id="cnt-Medium Animation">0</span>
+    </button>
+    <button class="ni" data-cat="Advanced Animation" onclick="setCat('Advanced Animation')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></span>
+      Advanced Animation <span class="badge" id="cnt-Advanced Animation">0</span>
+    </button>
+    <button class="ni" data-cat="Medium Collage" onclick="setCat('Medium Collage')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Medium Collage <span class="badge" id="cnt-Medium Collage">0</span>
+    </button>
+    <button class="ni" data-cat="Advanced Collage" onclick="setCat('Advanced Collage')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Advanced Collage <span class="badge" id="cnt-Advanced Collage">0</span>
+    </button>
+    <button class="ni" data-cat="Instructor Led" onclick="setCat('Instructor Led')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      Instructor Led <span class="badge" id="cnt-Instructor Led">0</span>
+    </button>
+    <button class="ni" data-cat="Medium Drama" onclick="setCat('Medium Drama')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+      Medium Drama <span class="badge" id="cnt-Medium Drama">0</span>
+    </button>
+    <button class="ni" data-cat="Advanced Drama" onclick="setCat('Advanced Drama')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+      Advanced Drama <span class="badge" id="cnt-Advanced Drama">0</span>
+    </button>
+    <button class="ni" data-cat="Motion Graphics" onclick="setCat('Motion Graphics')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></span>
+      Motion Graphics <span class="badge" id="cnt-Motion Graphics">0</span>
+    </button>
+
+    <div class="nav-label">Other</div>
+    <button class="ni" data-cat="Promos" onclick="setCat('Promos')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+      Promos <span class="badge" id="cnt-Promos">0</span>
+    </button>
+    <button class="ni" data-cat="AI Videos" onclick="setCat('AI Videos')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 18h8"/><path d="M12 18v4"/><path d="M17 10v1a5 5 0 0 1-10 0v-1"/></svg></span>
+      AI Videos <span class="badge" id="cnt-AI Videos">0</span>
+    </button>
+    <button class="ni" data-cat="Showreel" onclick="setCat('Showreel')">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span>
+      Showreel <span class="badge" id="cnt-Showreel">0</span>
+    </button>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="sidebar-foot-info">Production Library<br>Browse & Copy Links</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">All Assets</div>
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search" id="search" placeholder="Search by title, tags, description…" oninput="render()">
+    </div>
+    <div class="topbar-actions">
+      <select class="sort-sel" id="sortSel" onchange="render()">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="alpha">A → Z</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="chips">
+    <button class="chip on" data-yr="all" onclick="setYr('all')">All years</button>
+    <button class="chip" data-yr="2030" onclick="setYr('2030')">2030</button>
+    <button class="chip" data-yr="2029" onclick="setYr('2029')">2029</button>
+    <button class="chip" data-yr="2028" onclick="setYr('2028')">2028</button>
+    <button class="chip" data-yr="2027" onclick="setYr('2027')">2027</button>
+    <button class="chip" data-yr="2026" onclick="setYr('2026')">2026</button>
+    <button class="chip" data-yr="2025" onclick="setYr('2025')">2025</button>
+    <button class="chip" data-yr="2024" onclick="setYr('2024')">2024</button>
+    <button class="chip" data-yr="2023" onclick="setYr('2023')">2023</button>
+    <button class="chip" data-yr="2022" onclick="setYr('2022')">2022</button>
+    <button class="chip" data-yr="2021" onclick="setYr('2021')">2021</button>
+    <button class="chip" data-yr="2020" onclick="setYr('2020')">2020</button>
+    <button class="chip" data-yr="2019" onclick="setYr('2019')">2019</button>
+    <button class="chip" data-yr="2018" onclick="setYr('2018')">2018</button>
+    <button class="chip" data-yr="star" onclick="setYr('star')">⭐ Best for Proposals</button>
+  </div>
+
+  <div class="content">
+    <div class="stats" id="stats-row"></div>
+    <div class="meta-bar">
+      <span class="result-txt" id="result-txt"></span>
+    </div>
+    <div class="grid" id="grid">
+      <div class="loading"><div class="spinner"></div><p>Loading assets…</p></div>
+    </div>
+  </div>
+</main>
+
+<!-- PREVIEW MODAL -->
+<div class="preview-bg" id="pbg">
+  <div class="preview-box">
+    <div class="preview-head">
+      <div class="preview-title" id="preview-title"></div>
+      <button class="preview-close" onclick="closePreview()">✕</button>
+    </div>
+    <div id="preview-body"></div>
+    <div class="preview-desc" id="preview-desc"></div>
+    <div class="preview-tags" id="preview-tags"></div>
+  </div>
+</div>
+
+<script>
+const CAT_CLASS = {
+  'Projects':'c-proj',
+  'Basic Animation':'c-anim-basic','Medium Animation':'c-anim-mid','Advanced Animation':'c-anim-adv',
+  'Medium Collage':'c-collage-mid','Advanced Collage':'c-collage-adv',
+  'Instructor Led':'c-instructor',
+  'Medium Drama':'c-drama-mid','Advanced Drama':'c-drama-adv',
+  'Motion Graphics':'c-motion',
+  'Promos':'c-promo','AI Videos':'c-ai','Showreel':'c-show'
+};
+const ALL_CATS = Object.keys(CAT_CLASS);
+
+let data = [], activeCat = 'all', activeYr = 'all';
+
+/* ── Load data from data.json ─── */
+async function load() {
+  try {
+    const resp = await fetch('data.json?t=' + Date.now());
+    data = await resp.json();
+  } catch(e) {
+    console.error('Failed to load data.json', e);
+    data = [];
+  }
+  updateBadges();
+  render();
+}
+
+function setCat(c) {
+  activeCat = c;
+  document.querySelectorAll('.ni').forEach(b => b.classList.toggle('active', b.dataset.cat === c));
+  document.getElementById('page-title').textContent = c === 'all' ? 'All Assets' : c === 'star' ? 'Best for Proposals' : c;
+  render();
+}
+
+function setYr(y) {
+  activeYr = y;
+  document.querySelectorAll('.chip[data-yr]').forEach(b => b.classList.toggle('on', b.dataset.yr === y));
+  render();
+}
+
+function filtered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  return data.filter(v => {
+    if (q && !v.title.toLowerCase().includes(q) && !(v.fmt||'').toLowerCase().includes(q) && !(v.tags||'').toLowerCase().includes(q) && !(v.desc||'').toLowerCase().includes(q)) return false;
+    if (activeCat === 'star' && !v.star) return false;
+    if (activeCat !== 'all' && activeCat !== 'star' && v.cat !== activeCat) return false;
+    if (activeYr === 'star' && !v.star) return false;
+    if (activeYr !== 'all' && activeYr !== 'star' && v.year !== activeYr) return false;
+    return true;
+  });
+}
+
+function sorted(arr) {
+  const s = document.getElementById('sortSel').value;
+  return [...arr].sort((a,b) => {
+    if (s === 'alpha') return a.title.localeCompare(b.title);
+    if (s === 'oldest') return a.year - b.year;
+    return b.year - a.year;
+  });
+}
+
+function updateBadges() {
+  const cats = ['all','star',...ALL_CATS];
+  cats.forEach(c => {
+    const el = document.getElementById('cnt-'+c);
+    if (!el) return;
+    if (c === 'all') el.textContent = data.length;
+    else if (c === 'star') el.textContent = data.filter(v=>v.star).length;
+    else el.textContent = data.filter(v=>v.cat===c).length;
+  });
+}
+
+function render() {
+  const f = sorted(filtered());
+  document.getElementById('result-txt').textContent = f.length + ' assets';
+
+  const topCats = ALL_CATS.map(c=>({c,n:data.filter(v=>v.cat===c).length})).sort((a,b)=>b.n-a.n).slice(0,3);
+  document.getElementById('stats-row').innerHTML = topCats.map(({c,n}) =>
+    `<div class="stat"><div class="stat-n">${n}</div><div class="stat-l">${c}</div></div>`
+  ).join('') + `<div class="stat"><div class="stat-n">${data.filter(v=>v.star).length}</div><div class="stat-l">Best for Proposals</div></div>`;
+
+  const grid = document.getElementById('grid');
+  if (!f.length) {
+    grid.innerHTML = `<div class="empty"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><p>No assets found.<br>Try different filters.</p></div>`;
+    return;
+  }
+  grid.innerHTML = f.map(v => {
+    const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
+    return `
+    <div class="card">
+      <div class="thumb" onclick="previewAsset(${v.id})">
+        <div class="thumb-bg"></div>
+        ${thumbIcon(v.cat)}
+        <div class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${v.cat}</div>
+        ${v.star ? '<div class="star-tag">⭐ Proposal</div>' : ''}
+        <div class="overlay"><div class="play"><svg width="14" height="14" fill="white" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+      </div>
+      <div class="cbody">
+        <div class="ctitle">${v.title}</div>
+        ${v.desc ? `<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${v.desc}</div>` : ''}
+        <div class="ctags">
+          ${v.fmt ? `<span class="tag">${v.fmt}</span>` : ''}
+          ${tagArr.map(t=>`<span class="tag">${t}</span>`).join('')}
+          <span class="tag">${v.year}</span>
+        </div>
+        <div class="cfoot">
+          <span class="yr">${v.year}</span>
+          <div class="cfoot-actions">
+            <button class="copy-btn" onclick="copyLink('${v.link}',this)">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function thumbIcon(cat) {
+  const play = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>';
+  const cam = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
+  const user = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  const grid = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
+  const circle = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>';
+  const folder = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+  const pulse = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>';
+  const mic = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M17 10v1a5 5 0 0 1-10 0v-1"/></svg>';
+  const reel = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>';
+  const icons = {
+    'Projects':folder,
+    'Basic Animation':play,'Medium Animation':play,'Advanced Animation':play,
+    'Medium Collage':grid,'Advanced Collage':grid,
+    'Instructor Led':user,
+    'Medium Drama':cam,'Advanced Drama':cam,
+    'Motion Graphics':circle,
+    'Promos':pulse,'AI Videos':mic,'Showreel':reel
+  };
+  return icons[cat] || play;
+}
+
+function copyLink(link, btn) {
+  navigator.clipboard.writeText(link).catch(()=>{});
+  const orig = btn.innerHTML;
+  btn.innerHTML = `<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+  setTimeout(() => { btn.innerHTML = orig; }, 2000);
+}
+
+/* ── Preview ─── */
+function buildEmbedUrl(link) {
+  if (!link || link === '#') return null;
+  let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://www.youtube.com/embed/' + m[1] + '?autoplay=1';
+  m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) return 'https://player.vimeo.com/video/' + m[1] + '?autoplay=1';
+  if (link.includes('onedrive.live.com') || link.includes('sharepoint.com') || link.includes('1drv.ms')) {
+    if (link.includes('embed')) return link;
+    return link.replace('/view','/embed').replace('?e=','?e=');
+  }
+  m = link.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/file/d/' + m[1] + '/preview';
+  if (link.startsWith('http')) return link;
+  return null;
+}
+
+function previewAsset(id) {
+  const item = data.find(v => v.id === id);
+  if (!item) return;
+  const embedUrl = buildEmbedUrl(item.link);
+  const tagArr = (item.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+  document.getElementById('preview-title').textContent = item.title;
+  const body = document.getElementById('preview-body');
+  if (embedUrl) {
+    body.innerHTML = `<iframe class="preview-frame" src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+  } else {
+    body.innerHTML = `<div class="preview-nolink"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><p style="margin-top:12px">No embeddable link available.<br>Contact production to get the link.</p>${item.link && item.link !== '#' ? `<a href="${item.link}" target="_blank" style="color:#E50914;margin-top:10px;display:inline-block;font-size:12px">Open link in new tab →</a>` : ''}</div>`;
+  }
+  const descEl = document.getElementById('preview-desc');
+  descEl.innerHTML = item.desc || '';
+  descEl.style.display = item.desc ? 'block' : 'none';
+  const tagsEl = document.getElementById('preview-tags');
+  tagsEl.innerHTML = tagArr.map(t=>`<span class="tag">${t}</span>`).join('');
+  tagsEl.style.display = tagArr.length ? 'flex' : 'none';
+  document.getElementById('pbg').classList.add('open');
+}
+
+function closePreview() {
+  document.getElementById('pbg').classList.remove('open');
+  document.getElementById('preview-body').innerHTML = '';
+}
+
+document.getElementById('pbg').addEventListener('click', e => { if(e.target===e.currentTarget) closePreview(); });
+load();
+</script>
+</body>
+</html>
