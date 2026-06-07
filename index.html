@@ -62,26 +62,41 @@ input,select{font-family:'DM Sans',sans-serif}
 
 .content{padding:22px 26px;flex:1}
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:22px}
-.stat{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:14px 16px}
-.stat-n{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--t1)}
-.stat-l{font-size:11px;color:var(--t3);margin-top:2px}
+.stat{background:var(--s1);border:none;border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stat-n{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#E50914,#ff4d58);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-l{font-size:11px;color:var(--t3);margin-top:3px;font-weight:500}
 .meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .result-txt{font-size:12px;color:var(--t3)}
 
 /* ── GRID ─────────────────── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;transition:all .2s;animation:fadeUp .3s ease;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.card:hover{border-color:var(--b2);transform:translateY(-2px)}
-.thumb{width:100%;aspect-ratio:16/9;background:#2a2a2a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
-.thumb-bg{position:absolute;inset:0;opacity:.05;background:radial-gradient(circle at 60% 40%, #000 0%, transparent 70%)}
+.card{background:var(--s1);border:none;border-radius:14px;overflow:hidden;transition:all .25s ease;animation:fadeUp .35s ease;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.15)}
+.thumb{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
+.thumb-bg{position:absolute;inset:0;opacity:.18;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.4) 0%, transparent 60%)}
+
+/* ── CATEGORY GRADIENTS ─────── */
+.thumb-proj{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)}
+.thumb-anim-basic{background:linear-gradient(135deg,#2d1b69 0%,#6b3fa0 50%,#8b5cf6 100%)}
+.thumb-anim-mid{background:linear-gradient(135deg,#3b1d8e 0%,#7c3aed 50%,#a78bfa 100%)}
+.thumb-anim-adv{background:linear-gradient(135deg,#1e1145 0%,#4c1d95 50%,#7c3aed 100%)}
+.thumb-collage-mid{background:linear-gradient(135deg,#78350f 0%,#b45309 50%,#f59e0b 100%)}
+.thumb-collage-adv{background:linear-gradient(135deg,#7c2d12 0%,#c2410c 50%,#ea580c 100%)}
+.thumb-instructor{background:linear-gradient(135deg,#064e3b 0%,#047857 50%,#10b981 100%)}
+.thumb-drama-mid{background:linear-gradient(135deg,#1e3a5f 0%,#1d4ed8 50%,#3b82f6 100%)}
+.thumb-drama-adv{background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#4f46e5 100%)}
+.thumb-motion{background:linear-gradient(135deg,#831843 0%,#be185d 50%,#ec4899 100%)}
+.thumb-promo{background:linear-gradient(135deg,#7c2d12 0%,#ea580c 50%,#fb923c 100%)}
+.thumb-ai{background:linear-gradient(135deg,#134e4a 0%,#0891b2 50%,#06b6d4 100%)}
+.thumb-show{background:linear-gradient(135deg,#4a044e 0%,#9333ea 50%,#a855f7 100%)}
 .thumb svg{opacity:.35;transition:opacity .2s;width:34px;height:34px}
 .card:hover .thumb svg{opacity:.5}
-.cat-tag{position:absolute;top:9px;left:9px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;letter-spacing:.3px}
-.star-tag{position:absolute;top:9px;right:9px;font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(255,196,0,.15);color:#FFC400;border:1px solid rgba(255,196,0,.25)}
+.cat-tag{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;letter-spacing:.3px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15)}
+.star-tag{position:absolute;top:10px;right:10px;font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(255,196,0,.2);color:#FFD700;border:1px solid rgba(255,196,0,.3);backdrop-filter:blur(8px)}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .2s}
 .card:hover .overlay{background:rgba(0,0,0,.35)}
-.play{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.8);transition:all .2s}
+.play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.7);transition:all .25s ease}
 .card:hover .play{opacity:1;transform:scale(1)}
 .play svg{margin-left:2px}
 .cbody{padding:13px 14px}
@@ -138,13 +153,14 @@ input,select{font-family:'DM Sans',sans-serif}
 .preview-dl:hover{opacity:.85}
 
 /* ── LOGIN GATE ─────── */
-.login-overlay{position:fixed;inset:0;background:#1A1A1A;z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0f0f0f 0%,#1a1a2e 40%,#16213e 70%,#0f3460 100%);z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(229,9,20,.12) 0%,transparent 50%),radial-gradient(circle at 20% 80%,rgba(139,92,246,.08) 0%,transparent 40%);pointer-events:none}
 .login-overlay.hidden{display:none}
-.login-box{background:#fff;border-radius:16px;padding:40px 36px;width:360px;max-width:90vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.login-box .logo-svg{height:26px;fill:#1A1A1A;margin-bottom:6px}
-.login-box .logo-sub{font-size:10px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px}
-.login-box h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;color:#1A1A1A}
-.login-box p{font-size:13px;color:#888;margin-bottom:22px}
+.login-box{background:rgba(255,255,255,.97);border-radius:20px;padding:44px 40px;width:380px;max-width:90vw;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5);position:relative;backdrop-filter:blur(20px)}
+.login-box .logo-svg{height:28px;fill:#1A1A1A;margin-bottom:8px}
+.login-box .logo-sub{font-size:10px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:32px}
+.login-box h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;color:#1A1A1A}
+.login-box p{font-size:13px;color:#888;margin-bottom:24px;line-height:1.5}
 .login-input{width:100%;padding:11px 14px;border:1px solid #E0E0E0;border-radius:8px;font-size:14px;outline:none;text-align:center;letter-spacing:2px;transition:border-color .15s}
 .login-input:focus{border-color:#E50914}
 .login-input.error{border-color:#E50914;animation:shake .3s}
@@ -311,6 +327,15 @@ const CAT_CLASS = {
   'Motion Graphics':'c-motion',
   'Promos':'c-promo','AI Videos':'c-ai','Showreel':'c-show'
 };
+const THUMB_CLASS = {
+  'Projects':'thumb-proj',
+  'Basic Animation':'thumb-anim-basic','Medium Animation':'thumb-anim-mid','Advanced Animation':'thumb-anim-adv',
+  'Medium Collage':'thumb-collage-mid','Advanced Collage':'thumb-collage-adv',
+  'Instructor Led':'thumb-instructor',
+  'Medium Drama':'thumb-drama-mid','Advanced Drama':'thumb-drama-adv',
+  'Motion Graphics':'thumb-motion',
+  'Promos':'thumb-promo','AI Videos':'thumb-ai','Showreel':'thumb-show'
+};
 const ALL_CATS = Object.keys(CAT_CLASS);
 const DATA_URL = 'https://raw.githubusercontent.com/ahmedfaysalfouad-ops/media-vault/main/data.json';
 
@@ -428,7 +453,7 @@ function render() {
     const safeLink = safeUrl(v.link);
     return `
     <div class="card">
-      <button class="thumb" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}">
+      <button class="thumb ${THUMB_CLASS[v.cat]||'thumb-show'}" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}">
         <span class="thumb-bg"></span>
         ${thumbIcon(v.cat)}
         <span class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${esc(v.cat)}</span>

@@ -64,11 +64,25 @@ input,select{font-family:'DM Sans',sans-serif}
 
 /* ── GRID ─────────────────── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;transition:all .2s;animation:fadeUp .3s ease;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card{background:var(--s1);border:none;border-radius:14px;overflow:hidden;transition:all .25s ease;animation:fadeUp .35s ease;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.15)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .card:hover{border-color:var(--b2);transform:translateY(-2px)}
-.thumb{width:100%;aspect-ratio:16/9;background:#2a2a2a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.thumb-bg{position:absolute;inset:0;opacity:.05;background:radial-gradient(circle at 60% 40%, #000 0%, transparent 70%)}
+.thumb{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.thumb-bg{position:absolute;inset:0;opacity:.18;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.4) 0%, transparent 60%)}
+.thumb-proj{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)}
+.thumb-anim-basic{background:linear-gradient(135deg,#2d1b69 0%,#6b3fa0 50%,#8b5cf6 100%)}
+.thumb-anim-mid{background:linear-gradient(135deg,#3b1d8e 0%,#7c3aed 50%,#a78bfa 100%)}
+.thumb-anim-adv{background:linear-gradient(135deg,#1e1145 0%,#4c1d95 50%,#7c3aed 100%)}
+.thumb-collage-mid{background:linear-gradient(135deg,#78350f 0%,#b45309 50%,#f59e0b 100%)}
+.thumb-collage-adv{background:linear-gradient(135deg,#7c2d12 0%,#c2410c 50%,#ea580c 100%)}
+.thumb-instructor{background:linear-gradient(135deg,#064e3b 0%,#047857 50%,#10b981 100%)}
+.thumb-drama-mid{background:linear-gradient(135deg,#1e3a5f 0%,#1d4ed8 50%,#3b82f6 100%)}
+.thumb-drama-adv{background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#4f46e5 100%)}
+.thumb-motion{background:linear-gradient(135deg,#831843 0%,#be185d 50%,#ec4899 100%)}
+.thumb-promo{background:linear-gradient(135deg,#7c2d12 0%,#ea580c 50%,#fb923c 100%)}
+.thumb-ai{background:linear-gradient(135deg,#134e4a 0%,#0891b2 50%,#06b6d4 100%)}
+.thumb-show{background:linear-gradient(135deg,#4a044e 0%,#9333ea 50%,#a855f7 100%)}
 .thumb svg{opacity:.35;transition:opacity .2s;width:34px;height:34px}
 .card:hover .thumb svg{opacity:.5}
 .cat-tag{position:absolute;top:9px;left:9px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;letter-spacing:.3px}
@@ -403,6 +417,15 @@ const CAT_CLASS = {
   'Promos':'c-promo','AI Videos':'c-ai','Showreel':'c-show'
 };
 const ALL_CATS = Object.keys(CAT_CLASS);
+const THUMB_CLASS = {
+  'Projects':'thumb-proj',
+  'Basic Animation':'thumb-anim-basic','Medium Animation':'thumb-anim-mid','Advanced Animation':'thumb-anim-adv',
+  'Medium Collage':'thumb-collage-mid','Advanced Collage':'thumb-collage-adv',
+  'Instructor Led':'thumb-instructor',
+  'Medium Drama':'thumb-drama-mid','Advanced Drama':'thumb-drama-adv',
+  'Motion Graphics':'thumb-motion',
+  'Promos':'thumb-promo','AI Videos':'thumb-ai','Showreel':'thumb-show'
+};
 const SEED = [
   {id:1,title:'Basic Animation – Time Management Course',cat:'Basic Animation',year:'2025',fmt:'Tutorial',link:'#',star:true,tags:'education,time management,soft skills',desc:'Animated explainer for time management fundamentals'},
   {id:2,title:'Advanced Animation – Bank Campaign',cat:'Advanced Animation',year:'2025',fmt:'Promo',link:'#',star:true,tags:'finance,banking,campaign',desc:'Full campaign animation for banking product launch'},
@@ -666,7 +689,7 @@ function render() {
     const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
     return `
     <div class="card">
-      <div class="thumb" onclick="previewAsset(${v.id})" style="cursor:pointer">
+      <div class="thumb ${THUMB_CLASS[v.cat]||'thumb-show'}" onclick="previewAsset(${v.id})" style="cursor:pointer">
         <div class="thumb-bg"></div>
         ${thumbIcon(v.cat)}
         <div class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${v.cat}</div>
