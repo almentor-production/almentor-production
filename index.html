@@ -312,7 +312,7 @@ const CAT_CLASS = {
   'Promos':'c-promo','AI Videos':'c-ai','Showreel':'c-show'
 };
 const ALL_CATS = Object.keys(CAT_CLASS);
-const CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019ea17e-757a-74aa-a5ba-59ca2669272f';
+const DATA_URL = 'https://raw.githubusercontent.com/ahmedfaysalfouad-ops/media-vault/main/data.json';
 
 let data = [], activeCat = 'all', activeYr = 'all';
 let lastFocused = null;
@@ -336,7 +336,7 @@ function safeUrl(u) {
 /* ── Load data from cloud (same source as Admin) ─── */
 async function load() {
   try {
-    const resp = await fetch(CLOUD_URL, {headers:{'Accept':'application/json'}});
+    const resp = await fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'});
     if (resp.ok) { data = await resp.json(); }
     else { throw new Error('Cloud unavailable'); }
   } catch(e) {

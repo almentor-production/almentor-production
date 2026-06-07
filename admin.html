@@ -411,15 +411,37 @@ const SEED = [
   {id:15,title:'Showreel – almentor Production Reel 2025',cat:'Showreel',year:'2025',fmt:'Reel',link:'#',star:true,tags:'showreel,portfolio,best work',desc:'Official almentor production showreel'},
 ];
 
-const CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019ea17e-757a-74aa-a5ba-59ca2669272f';
+/* ── GitHub API Config ─── */
+const GH_OWNER = 'ahmedfaysalfouad-ops';
+const GH_REPO  = 'media-vault';
+const GH_FILE  = 'data.json';
+const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_RAW   = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${GH_FILE}`;
+const GH_TOKEN = localStorage.getItem('mv-gh-token') || '';
+
 let data = [], activeCat = 'all', activeYr = 'all';
 let saving = false;
+let fileSha = '';  // needed by GitHub API to update the file
+
+/* ── Token setup (one-time) ─── */
+function setupToken() {
+  const t = prompt('Paste your GitHub Personal Access Token here.\nThis is stored in your browser only and never shared.');
+  if (t && t.trim()) {
+    localStorage.setItem('mv-gh-token', t.trim());
+    location.reload();
+  }
+}
+
+function getToken() {
+  return localStorage.getItem('mv-gh-token') || '';
+}
 
 async function load() {
   try {
-    const resp = await fetch(CLOUD_URL, {headers:{'Accept':'application/json'}});
+    // Read from raw.githubusercontent.com (CORS enabled, always latest)
+    const resp = await fetch(GH_RAW + '?t=' + Date.now(), {cache:'no-store'});
     if (resp.ok) { data = await resp.json(); }
-    else { data = SEED; }
+    else { throw new Error('Raw fetch failed'); }
   } catch(e) {
     // Fallback to localStorage then SEED
     try {
@@ -427,30 +449,72 @@ async function load() {
       data = r ? JSON.parse(r) : SEED;
     } catch(e2) { data = SEED; }
   }
+  // Get current file SHA (needed for updates)
+  try {
+    const meta = await fetch(GH_API, {headers: getToken() ? {'Authorization':'Bearer '+getToken()} : {}});
+    if (meta.ok) { const j = await meta.json(); fileSha = j.sha; }
+  } catch(e) { /* will retry on save */ }
   localStorage.setItem('mv-assets', JSON.stringify(data));
   updateBadges();
   render();
-  showStatus('Loaded ' + data.length + ' assets from cloud', 'green');
+  if (!getToken()) {
+    showStatus('⚠ No GitHub token — changes won\'t sync. Click here to set up.', 'orange', true);
+  } else {
+    showStatus('Loaded ' + data.length + ' assets', 'green');
+  }
 }
 
 async function persist() {
   localStorage.setItem('mv-assets', JSON.stringify(data));
+  const token = getToken();
+  if (!token) {
+    showStatus('⚠ No GitHub token — click here to set up', 'orange', true);
+    return;
+  }
   if (saving) return;
   saving = true;
-  showStatus('Syncing to cloud…', 'orange');
+  showStatus('Syncing to GitHub…', 'orange');
   try {
-    const resp = await fetch(CLOUD_URL, {
+    // Get latest SHA if we don't have it
+    if (!fileSha) {
+      const meta = await fetch(GH_API, {headers:{'Authorization':'Bearer '+token}});
+      if (meta.ok) { const j = await meta.json(); fileSha = j.sha; }
+    }
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const resp = await fetch(GH_API, {
       method: 'PUT',
-      headers: {'Content-Type':'application/json','Accept':'application/json'},
-      body: JSON.stringify(data)
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: 'Update assets — ' + new Date().toLocaleString(),
+        content: content,
+        sha: fileSha
+      })
     });
-    if (resp.ok) { showStatus('Synced! Team will see changes now.', 'green'); }
-    else { showStatus('Sync failed — try again', 'red'); }
-  } catch(e) { showStatus('Offline — changes saved locally', 'orange'); }
+    if (resp.ok) {
+      const result = await resp.json();
+      fileSha = result.content.sha;
+      showStatus('Synced! Team will see changes shortly.', 'green');
+    } else {
+      const err = await resp.json();
+      if (resp.status === 409) {
+        // SHA conflict — refetch and retry
+        const meta2 = await fetch(GH_API, {headers:{'Authorization':'Bearer '+token}});
+        if (meta2.ok) { const j2 = await meta2.json(); fileSha = j2.sha; }
+        showStatus('Version conflict — try saving again', 'orange');
+      } else {
+        showStatus('Sync failed: ' + (err.message||'unknown error'), 'red');
+      }
+    }
+  } catch(e) {
+    showStatus('Offline — changes saved locally only', 'orange');
+  }
   saving = false;
 }
 
-function showStatus(msg, color) {
+function showStatus(msg, color, clickable) {
   let el = document.getElementById('sync-status');
   if (!el) {
     el = document.createElement('div');
@@ -463,8 +527,10 @@ function showStatus(msg, color) {
   el.style.color = color === 'green' ? '#10B981' : color === 'red' ? '#E50914' : '#F59E0B';
   el.style.border = '1px solid ' + (color === 'green' ? '#10B981' : color === 'red' ? '#E50914' : '#F59E0B');
   el.style.opacity = '1';
+  el.style.cursor = clickable ? 'pointer' : 'default';
+  el.onclick = clickable ? setupToken : null;
   clearTimeout(el._t);
-  el._t = setTimeout(() => { el.style.opacity = '0'; }, 3000);
+  if (!clickable) el._t = setTimeout(() => { el.style.opacity = '0'; }, 3000);
 }
 
 function exportData() {
