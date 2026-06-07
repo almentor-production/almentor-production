@@ -185,5 +185,11 @@
     "star": true,
     "tags": "showreel,portfolio,best work",
     "desc": "Official almentor production showreel"
+  },
+  {
+    "id": "_banner",
+    "url": "https://raw.githubusercontent.com/ahmedfaysalfouad-ops/media-vault/main/banner.jpg",
+    "title": "Production Library",
+    "subtitle": "Browse, preview & download production assets"
   }
 ]
