@@ -382,29 +382,60 @@ const SEED = [
   {id:15,title:'Showreel – almentor Production Reel 2025',cat:'Showreel',year:'2025',fmt:'Reel',link:'#',star:true,tags:'showreel,portfolio,best work',desc:'Official almentor production showreel'},
 ];
 
+const CLOUD_URL = 'https://jsonblob.com/api/jsonBlob/019e3b01-1312-713c-ab81-9a6bf9e1425a';
 let data = [], activeCat = 'all', activeYr = 'all';
+let saving = false;
 
 async function load() {
-  // Try localStorage first (admin working copy), fallback to data.json, then SEED
   try {
-    const r = localStorage.getItem('mv-assets');
-    if (r) {
-      data = JSON.parse(r);
-    } else {
-      try {
-        const resp = await fetch('data.json?t=' + Date.now());
-        if (resp.ok) { data = await resp.json(); }
-        else { data = SEED; }
-      } catch(e) { data = SEED; }
-      persist();
-    }
-  } catch(e) { data = SEED; }
+    const resp = await fetch(CLOUD_URL, {headers:{'Accept':'application/json'}});
+    if (resp.ok) { data = await resp.json(); }
+    else { data = SEED; }
+  } catch(e) {
+    // Fallback to localStorage then SEED
+    try {
+      const r = localStorage.getItem('mv-assets');
+      data = r ? JSON.parse(r) : SEED;
+    } catch(e2) { data = SEED; }
+  }
+  localStorage.setItem('mv-assets', JSON.stringify(data));
   updateBadges();
   render();
+  showStatus('Loaded ' + data.length + ' assets from cloud', 'green');
 }
 
-function persist() {
-  try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
+async function persist() {
+  localStorage.setItem('mv-assets', JSON.stringify(data));
+  if (saving) return;
+  saving = true;
+  showStatus('Syncing to cloud…', 'orange');
+  try {
+    const resp = await fetch(CLOUD_URL, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (resp.ok) { showStatus('Synced! Team will see changes now.', 'green'); }
+    else { showStatus('Sync failed — try again', 'red'); }
+  } catch(e) { showStatus('Offline — changes saved locally', 'orange'); }
+  saving = false;
+}
+
+function showStatus(msg, color) {
+  let el = document.getElementById('sync-status');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-status';
+    el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;z-index:999;transition:opacity .3s;box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.background = color === 'green' ? '#ECFDF5' : color === 'red' ? '#FEE2E2' : '#FFF7ED';
+  el.style.color = color === 'green' ? '#10B981' : color === 'red' ? '#E50914' : '#F59E0B';
+  el.style.border = '1px solid ' + (color === 'green' ? '#10B981' : color === 'red' ? '#E50914' : '#F59E0B');
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.opacity = '0'; }, 3000);
 }
 
 function exportData() {
