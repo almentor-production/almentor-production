@@ -1,16 +1,5 @@
 [
   {
-    "id": 1780828331526,
-    "title": "teest",
-    "cat": "Promos",
-    "year": "2025",
-    "fmt": "Promo",
-    "link": "rrrrr",
-    "tags": "",
-    "desc": "",
-    "star": false
-  },
-  {
     "id": 1,
     "title": "Basic Animation – Time Management Course",
     "cat": "Basic Animation",
@@ -141,17 +130,6 @@
     "star": true,
     "tags": "tech,onboarding,corporate",
     "desc": "Complete onboarding video package for new clients"
-  },
-  {
-    "id": 13,
-    "title": "Promos – Summer Campaign 2025",
-    "cat": "Promos",
-    "year": "2025",
-    "fmt": "Promo",
-    "link": "#",
-    "star": false,
-    "tags": "summer,campaign,promo",
-    "desc": "Promotional video for summer campaign"
   },
   {
     "id": 14,
