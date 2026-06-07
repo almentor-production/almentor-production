@@ -147,9 +147,38 @@ input,select{font-family:'DM Sans',sans-serif}
 .preview-desc{padding:12px 18px;color:#aaa;font-size:12px;border-top:1px solid #222;line-height:1.5}
 .preview-tags{padding:8px 18px 14px;display:flex;gap:5px;flex-wrap:wrap}
 .preview-tags .tag{background:#222;border-color:#333;color:#888}
+
+/* ── LOGIN GATE ─────── */
+.login-overlay{position:fixed;inset:0;background:#1A1A1A;z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-overlay.hidden{display:none}
+.login-box{background:#fff;border-radius:16px;padding:40px 36px;width:360px;max-width:90vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.login-box .logo-svg{height:26px;fill:#1A1A1A;margin-bottom:6px}
+.login-box .logo-sub{font-size:10px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px}
+.login-box h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;color:#1A1A1A}
+.login-box p{font-size:13px;color:#888;margin-bottom:22px}
+.login-input{width:100%;padding:11px 14px;border:1px solid #E0E0E0;border-radius:8px;font-size:14px;outline:none;text-align:center;letter-spacing:2px;transition:border-color .15s}
+.login-input:focus{border-color:#E50914}
+.login-input.error{border-color:#E50914;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.login-btn{width:100%;padding:11px;border:none;border-radius:8px;background:#E50914;color:#fff;font-size:14px;font-weight:500;margin-top:14px;cursor:pointer;transition:opacity .15s}
+.login-btn:hover{opacity:.88}
+.login-error{font-size:12px;color:#E50914;margin-top:10px;min-height:16px}
 </style>
 </head>
 <body>
+
+<!-- LOGIN GATE -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
+    <div class="logo-sub">MEDIA VAULT — ADMIN</div>
+    <h2>Admin Access</h2>
+    <p>Enter the admin code to manage assets</p>
+    <input class="login-input" id="loginPass" type="password" placeholder="Admin Code" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Enter</button>
+    <div class="login-error" id="loginErr"></div>
+  </div>
+</div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -728,7 +757,56 @@ function closePreview() {
 
 document.getElementById('mbg').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
 document.getElementById('pbg').addEventListener('click', e => { if(e.target===e.currentTarget) closePreview(); });
-load();
+
+/* ── LOGIN GATE ─── */
+const PASS_HASH = 'd8c2a00be9ea7943df28632340db5858269507f17a1e34814ebcf24c4cc27951';
+const SESSION_KEY = 'mv-admin-auth';
+const SESSION_HOURS = 8;
+
+async function hashStr(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+function isLoggedIn() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+    if (!s) return false;
+    if (Date.now() - s.ts > SESSION_HOURS * 3600000) { sessionStorage.removeItem(SESSION_KEY); return false; }
+    return true;
+  } catch(e) { return false; }
+}
+
+function showApp() {
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.querySelector('.sidebar').style.display = '';
+  document.querySelector('.main').style.display = '';
+  load();
+}
+
+async function doLogin() {
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginErr');
+  if (!pass) { errEl.textContent = 'Please enter the admin code'; return; }
+  const hash = await hashStr(pass);
+  if (hash === PASS_HASH) {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ts: Date.now()}));
+    showApp();
+  } else {
+    errEl.textContent = 'Wrong admin code.';
+    document.getElementById('loginPass').classList.add('error');
+    setTimeout(() => document.getElementById('loginPass').classList.remove('error'), 400);
+  }
+}
+
+if (isLoggedIn()) {
+  showApp();
+} else {
+  document.querySelector('.sidebar').style.display = 'none';
+  document.querySelector('.main').style.display = 'none';
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginPass').focus();
+}
 </script>
 </body>
 </html>
