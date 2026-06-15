@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>almentor – Media Vault</title>
+<meta name="description" content="almentor production asset library — browse and copy links to internal video productions, animations, and showreels.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1A1A1A">
+<meta property="og:type" content="website">
+<meta property="og:title" content="almentor – Media Vault">
+<meta property="og:description" content="Internal production asset library.">
+<meta property="og:site_name" content="almentor Media Vault">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A1A1A'/%3E%3Crect x='8' y='12' width='16' height='3' fill='%23E50914'/%3E%3Crect x='8' y='17' width='16' height='3' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F5F5;--s1:#FFFFFF;--s2:#F0F0F0;--s3:#E8E8E8;--b1:#E0E0E0;--b2:#CCCCCC;--acc:#E50914;--acc2:rgba(229,9,20,0.08);--t1:#1A1A1A;--t2:#555555;--t3:#888888;--sw:220px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;font-size:14px;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:'DM Sans',sans-serif}
+input,select{font-family:'DM Sans',sans-serif}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+
+/* ── SIDEBAR ─────────────────── */
+.sidebar{width:var(--sw);min-height:100vh;background:#1A1A1A;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:20}
+.logo{padding:20px 16px 16px;border-bottom:1px solid #2a2a2a;display:flex;flex-direction:column;align-items:flex-start}
+.logo-svg{height:22px;margin-bottom:8px;fill:#fff}
+.logo-sub{font-size:9.5px;color:#666;letter-spacing:1.5px;text-transform:uppercase}
+.nav{flex:1;padding:14px 10px;overflow-y:auto}
+.nav-label{font-size:9.5px;font-weight:600;color:#666;letter-spacing:1.8px;text-transform:uppercase;padding:0 8px;margin:16px 0 6px}
+.nav-label:first-child{margin-top:0}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:#999;font-weight:400;transition:all .15s;margin-bottom:1px;border:none;background:none;width:100%;text-align:left}
+.ni:hover{background:#252525;color:#fff}
+.ni.active{background:rgba(229,9,20,0.15);color:#E50914;font-weight:500}
+.ni .ic{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ni .badge{margin-left:auto;font-size:10px;background:#2a2a2a;padding:1px 7px;border-radius:20px;color:#666}
+.ni.active .badge{background:rgba(229,9,20,0.15);color:#E50914}
+.sidebar-foot{padding:16px;border-top:1px solid #2a2a2a}
+.sidebar-foot-info{font-size:10px;color:#555;text-align:center;line-height:1.5}
+
+/* ── MAIN ─────────────────── */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(245,245,245,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--b1);padding:14px 26px;display:flex;align-items:center;gap:14px}
+.page-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;flex-shrink:0}
+.search-wrap{flex:1;max-width:380px;position:relative}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3)}
+.search{width:100%;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;padding:8px 12px 8px 34px;outline:none;transition:border-color .15s}
+.search:focus{border-color:var(--b2)}
+.search::placeholder{color:var(--t3)}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.sort-sel{background:var(--s1);border:1px solid var(--b1);border-radius:7px;color:var(--t2);font-size:12px;padding:7px 10px;outline:none}
+
+.chips{padding:12px 26px;display:flex;gap:7px;border-bottom:1px solid var(--b1);flex-wrap:wrap}
+.chip{padding:5px 13px;border-radius:20px;border:1px solid var(--b1);font-size:12px;color:var(--t3);cursor:pointer;background:none;transition:all .15s}
+.chip:hover{border-color:var(--b2);color:var(--t1)}
+.chip.on{border-color:var(--acc);color:var(--acc);background:var(--acc2)}
+
+.content{padding:22px 26px;flex:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:22px}
+.stat{background:var(--s1);border:none;border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stat-n{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#E50914,#ff4d58);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-l{font-size:11px;color:var(--t3);margin-top:3px;font-weight:500}
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.result-txt{font-size:12px;color:var(--t3)}
+
+/* ── GRID ─────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:var(--s1);border:none;border-radius:14px;overflow:hidden;transition:all .25s ease;animation:fadeUp .35s ease;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.15)}
+.thumb{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
+.thumb-bg{position:absolute;inset:0;opacity:.18;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.4) 0%, transparent 60%)}
+
+/* ── HERO BANNER ─────── */
+.hero{position:relative;width:100%;height:220px;overflow:hidden;border-bottom:1px solid var(--b1)}
+.hero-img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.55) 100%)}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:24px 30px;color:#fff}
+.hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.hero-sub{font-size:13px;opacity:.85;font-weight:300;text-shadow:0 1px 6px rgba(0,0,0,.3)}
+.hero-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#0f0f0f 0%,#1a1a2e 40%,#0f3460 100%);display:flex;align-items:center;justify-content:center}
+.hero-placeholder svg{opacity:.2;width:60px;height:60px}
+
+/* ── CATEGORY GRADIENTS ─────── */
+.thumb-proj{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)}
+.thumb-anim-basic{background:linear-gradient(135deg,#2d1b69 0%,#6b3fa0 50%,#8b5cf6 100%)}
+.thumb-anim-mid{background:linear-gradient(135deg,#3b1d8e 0%,#7c3aed 50%,#a78bfa 100%)}
+.thumb-anim-adv{background:linear-gradient(135deg,#1e1145 0%,#4c1d95 50%,#7c3aed 100%)}
+.thumb-collage-mid{background:linear-gradient(135deg,#78350f 0%,#b45309 50%,#f59e0b 100%)}
+.thumb-collage-adv{background:linear-gradient(135deg,#7c2d12 0%,#c2410c 50%,#ea580c 100%)}
+.thumb-instructor{background:linear-gradient(135deg,#064e3b 0%,#047857 50%,#10b981 100%)}
+.thumb-drama-mid{background:linear-gradient(135deg,#1e3a5f 0%,#1d4ed8 50%,#3b82f6 100%)}
+.thumb-drama-adv{background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#4f46e5 100%)}
+.thumb-motion{background:linear-gradient(135deg,#831843 0%,#be185d 50%,#ec4899 100%)}
+.thumb-promo{background:linear-gradient(135deg,#7c2d12 0%,#ea580c 50%,#fb923c 100%)}
+.thumb-ai{background:linear-gradient(135deg,#134e4a 0%,#0891b2 50%,#06b6d4 100%)}
+.thumb-show{background:linear-gradient(135deg,#4a044e 0%,#9333ea 50%,#a855f7 100%)}
+.thumb svg{opacity:.35;transition:opacity .2s;width:34px;height:34px}
+.card:hover .thumb svg{opacity:.5}
+.cat-tag{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;padding:4px 10px;border-radius:6px;letter-spacing:.3px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15)}
+.star-tag{position:absolute;top:10px;right:10px;font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(255,196,0,.2);color:#FFD700;border:1px solid rgba(255,196,0,.3);backdrop-filter:blur(8px)}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:background .2s}
+.card:hover .overlay{background:rgba(0,0,0,.35)}
+.play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.7);transition:all .25s ease}
+.card:hover .play{opacity:1;transform:scale(1)}
+.play svg{margin-left:2px}
+.cbody{padding:13px 14px}
+.ctitle{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:8px;line-height:1.45}
+.ctags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.tag{font-size:10.5px;padding:3px 8px;border-radius:4px;background:var(--s2);color:var(--t3);border:1px solid var(--b1)}
+.cfoot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--b1);padding-top:10px}
+.yr{font-size:11px;color:var(--t3)}
+.cfoot-actions{display:flex;gap:5px;align-items:center}
+.copy-btn{font-size:11.5px;color:var(--acc);background:var(--acc2);border:none;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;transition:opacity .15s}
+.copy-btn:hover{opacity:.8}
+.empty{text-align:center;padding:80px 20px;grid-column:1/-1}
+.empty svg{opacity:.15;margin-bottom:12px}
+.empty p{font-size:13px;color:var(--t3)}
+
+/* ── CATEGORY COLORS ─────── */
+.c-proj{background:rgba(229,9,20,.15);color:#E50914}
+.c-anim-basic{background:rgba(139,92,246,.15);color:#A78BFA}
+.c-anim-mid{background:rgba(167,92,246,.18);color:#B794F6}
+.c-anim-adv{background:rgba(109,40,217,.2);color:#8B5CF6}
+.c-collage-mid{background:rgba(245,158,11,.15);color:#F59E0B}
+.c-collage-adv{background:rgba(234,88,12,.18);color:#EA580C}
+.c-instructor{background:rgba(16,185,129,.15);color:#10B981}
+.c-drama-mid{background:rgba(59,130,246,.15);color:#3B82F6}
+.c-drama-adv{background:rgba(37,99,235,.2);color:#2563EB}
+.c-motion{background:rgba(236,72,153,.15);color:#EC4899}
+.c-promo{background:rgba(251,146,60,.15);color:#FB923C}
+.c-ai{background:rgba(6,182,212,.15);color:#06B6D4}
+.c-show{background:rgba(168,85,247,.15);color:#A855F7}
+
+/* ── PREVIEW MODAL ─────── */
+.preview-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.preview-bg.open{display:flex}
+.preview-box{background:#111;border-radius:14px;width:720px;max-width:95vw;animation:mIn .25s ease;overflow:hidden}
+@keyframes mIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.preview-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #333}
+.preview-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.preview-close{background:none;border:none;color:#999;font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;transition:background .15s;flex-shrink:0}
+.preview-close:hover{background:#333;color:#fff}
+.preview-frame{width:100%;aspect-ratio:16/9;border:none}
+.preview-nolink{padding:60px 20px;text-align:center;color:#666;font-size:13px}
+.preview-desc{padding:12px 18px;color:#aaa;font-size:12px;border-top:1px solid #222;line-height:1.5}
+.preview-tags{padding:8px 18px 14px;display:flex;gap:5px;flex-wrap:wrap}
+.preview-tags .tag{background:#222;border-color:#333;color:#888}
+
+/* ── LOADING ─────── */
+.loading{text-align:center;padding:80px 20px;grid-column:1/-1}
+.loading p{font-size:13px;color:var(--t3)}
+.spinner{width:28px;height:28px;border:3px solid var(--b1);border-top-color:var(--acc);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dl-btn{font-size:11.5px;color:#10B981;background:rgba(16,185,129,.08);border:none;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;transition:opacity .15s;text-decoration:none}
+.dl-btn:hover{opacity:.8}
+.preview-dl{display:inline-flex;align-items:center;gap:6px;background:#E50914;color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;text-decoration:none;margin:0 18px 14px}
+.preview-dl:hover{opacity:.85}
+
+/* ── LOGIN GATE ─────── */
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0f0f0f 0%,#1a1a2e 40%,#16213e 70%,#0f3460 100%);z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(229,9,20,.12) 0%,transparent 50%),radial-gradient(circle at 20% 80%,rgba(139,92,246,.08) 0%,transparent 40%);pointer-events:none}
+.login-overlay.hidden{display:none}
+.login-box{background:rgba(255,255,255,.97);border-radius:20px;padding:44px 40px;width:380px;max-width:90vw;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5);position:relative;backdrop-filter:blur(20px)}
+.login-box .logo-svg{height:28px;fill:#1A1A1A;margin-bottom:8px}
+.login-box .logo-sub{font-size:10px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:32px}
+.login-box h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;color:#1A1A1A}
+.login-box p{font-size:13px;color:#888;margin-bottom:24px;line-height:1.5}
+.login-input{width:100%;padding:11px 14px;border:1px solid #E0E0E0;border-radius:8px;font-size:14px;outline:none;text-align:center;letter-spacing:2px;transition:border-color .15s}
+.login-input:focus{border-color:#E50914}
+.login-input.error{border-color:#E50914;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.login-btn{width:100%;padding:11px;border:none;border-radius:8px;background:#E50914;color:#fff;font-size:14px;font-weight:500;margin-top:14px;cursor:pointer;transition:opacity .15s}
+.login-btn:hover{opacity:.88}
+.login-error{font-size:12px;color:#E50914;margin-top:10px;min-height:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.noscript-msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#1A1A1A;color:#fff;font-family:sans-serif;padding:24px;text-align:center;z-index:99999}
+.fatal-msg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#1A1A1A;color:#fff;font-family:sans-serif;padding:24px;text-align:center;z-index:9998}
+.fatal-msg.show{display:flex}
+</style>
+</head>
+<body>
+
+<noscript><div class="noscript-msg"><div><strong>JavaScript is required.</strong><br>Please enable JavaScript to use Media Vault.</div></div></noscript>
+<div class="fatal-msg" id="fatalErr" role="alert"><div><strong>Couldn't load assets.</strong><br>Please refresh the page or contact production.</div></div>
+
+<!-- LOGIN GATE -->
+<div class="login-overlay" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="loginHeading">
+  <form class="login-box" id="loginForm" novalidate>
+    <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
+    <div class="logo-sub">MEDIA VAULT</div>
+    <h2 id="loginHeading">Team Access</h2>
+    <p>Enter the access code to browse production assets</p>
+    <label for="loginPass" class="sr-only">Access code</label>
+    <input class="login-input" id="loginPass" name="pass" type="password" placeholder="Access Code" autocomplete="current-password" aria-describedby="loginErr" required>
+    <button class="login-btn" type="submit">Enter</button>
+    <div class="login-error" id="loginErr" role="alert" aria-live="polite"></div>
+  </form>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" aria-label="Categories">
+  <div class="logo">
+    <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z" fill="#fff"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
+    <div class="logo-sub">MEDIA VAULT</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Browse</div>
+    <button class="ni active" type="button" data-cat="all" aria-pressed="true">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      All Assets <span class="badge" id="cnt-all">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="star" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+      Best for Proposals <span class="badge" id="cnt-star">0</span>
+    </button>
+
+    <div class="nav-label">Production Types</div>
+    <button class="ni" type="button" data-cat="Projects" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+      Projects <span class="badge" id="cnt-Projects">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Basic Animation" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></span>
+      Basic Animation <span class="badge" id="cnt-Basic-Animation">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Medium Animation" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></span>
+      Medium Animation <span class="badge" id="cnt-Medium-Animation">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Advanced Animation" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></span>
+      Advanced Animation <span class="badge" id="cnt-Advanced-Animation">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Medium Collage" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Medium Collage <span class="badge" id="cnt-Medium-Collage">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Advanced Collage" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Advanced Collage <span class="badge" id="cnt-Advanced-Collage">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Instructor Led" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      Instructor Led <span class="badge" id="cnt-Instructor-Led">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Medium Drama" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+      Medium Drama <span class="badge" id="cnt-Medium-Drama">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Advanced Drama" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+      Advanced Drama <span class="badge" id="cnt-Advanced-Drama">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Motion Graphics" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></span>
+      Motion Graphics <span class="badge" id="cnt-Motion-Graphics">0</span>
+    </button>
+
+    <div class="nav-label">Other</div>
+    <button class="ni" type="button" data-cat="Promos" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+      Promos <span class="badge" id="cnt-Promos">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="AI Videos" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 18h8"/><path d="M12 18v4"/><path d="M17 10v1a5 5 0 0 1-10 0v-1"/></svg></span>
+      AI Videos <span class="badge" id="cnt-AI-Videos">0</span>
+    </button>
+    <button class="ni" type="button" data-cat="Showreel" aria-pressed="false">
+      <span class="ic" aria-hidden="true"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span>
+      Showreel <span class="badge" id="cnt-Showreel">0</span>
+    </button>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="sidebar-foot-info">Production Library<br>Browse & Copy Links</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <!-- HERO BANNER -->
+  <div class="hero" id="heroBanner">
+    <div class="hero-placeholder">
+      <svg fill="none" stroke="white" stroke-width="1" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-title">Production Library</div>
+      <div class="hero-sub">Browse, preview & download production assets</div>
+    </div>
+  </div>
+  <div class="topbar">
+    <div class="page-title" id="page-title">All Assets</div>
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search" id="search" placeholder="Search by title, tags, description…" oninput="render()">
+    </div>
+    <div class="topbar-actions">
+      <select class="sort-sel" id="sortSel" onchange="render()">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="alpha">A → Z</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="chips" id="year-chips" role="group" aria-label="Filter by year"></div>
+
+  <div class="content">
+    <div class="stats" id="stats-row"></div>
+    <div class="meta-bar">
+      <span class="result-txt" id="result-txt"></span>
+    </div>
+    <div class="grid" id="grid">
+      <div class="loading"><div class="spinner"></div><p>Loading assets…</p></div>
+    </div>
+  </div>
+</main>
+
+<!-- PREVIEW MODAL -->
+<div class="preview-bg" id="pbg" role="dialog" aria-modal="true" aria-labelledby="preview-title" aria-hidden="true">
+  <div class="preview-box">
+    <div class="preview-head">
+      <div class="preview-title" id="preview-title"></div>
+      <button class="preview-close" type="button" id="preview-close-btn" aria-label="Close preview">✕</button>
+    </div>
+    <div id="preview-body"></div>
+    <div class="preview-desc" id="preview-desc"></div>
+    <div class="preview-tags" id="preview-tags"></div>
+    <div id="preview-dl-wrap"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const CAT_CLASS = {
+  'Projects':'c-proj',
+  'Basic Animation':'c-anim-basic','Medium Animation':'c-anim-mid','Advanced Animation':'c-anim-adv',
+  'Medium Collage':'c-collage-mid','Advanced Collage':'c-collage-adv',
+  'Instructor Led':'c-instructor',
+  'Medium Drama':'c-drama-mid','Advanced Drama':'c-drama-adv',
+  'Motion Graphics':'c-motion',
+  'Promos':'c-promo','AI Videos':'c-ai','Showreel':'c-show'
+};
+const THUMB_CLASS = {
+  'Projects':'thumb-proj',
+  'Basic Animation':'thumb-anim-basic','Medium Animation':'thumb-anim-mid','Advanced Animation':'thumb-anim-adv',
+  'Medium Collage':'thumb-collage-mid','Advanced Collage':'thumb-collage-adv',
+  'Instructor Led':'thumb-instructor',
+  'Medium Drama':'thumb-drama-mid','Advanced Drama':'thumb-drama-adv',
+  'Motion Graphics':'thumb-motion',
+  'Promos':'thumb-promo','AI Videos':'thumb-ai','Showreel':'thumb-show'
+};
+const ALL_CATS = Object.keys(CAT_CLASS);
+const DATA_URL = 'https://raw.githubusercontent.com/almentor-production/almentor-production/main/data.json';
+
+let data = [], activeCat = 'all', activeYr = 'all';
+let lastFocused = null;
+
+/* ── Helpers ─── */
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function slug(s) { return String(s).replace(/\s+/g,'-'); }
+function safeUrl(u) {
+  if (!u || u === '#') return '';
+  try {
+    const url = new URL(u, window.location.href);
+    if (url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'mailto:') return url.href;
+  } catch(e) {}
+  return '';
+}
+
+/* ── Load data from cloud (same source as Admin) ─── */
+async function load() {
+  let loaded = false;
+  let source = '';
+
+  // Strategy 1: GitHub raw URL (published data)
+  try {
+    const resp = await fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'});
+    if (resp.ok) {
+      data = await resp.json();
+      loaded = true;
+      source = 'cloud';
+      // Also save to localStorage so we have a backup
+      try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
+    }
+  } catch(e) {}
+
+  // Strategy 2: localStorage (shared with Admin on same browser)
+  if (!loaded) {
+    try {
+      const r = localStorage.getItem('mv-assets');
+      if (r) {
+        data = JSON.parse(r);
+        loaded = true;
+        source = 'local';
+      }
+    } catch(e) {}
+  }
+
+  // Strategy 3: local data.json file fallback
+  if (!loaded) {
+    try {
+      const resp2 = await fetch('data.json?t=' + Date.now());
+      if (resp2.ok) { data = await resp2.json(); loaded = true; source = 'file'; }
+    } catch(e2) {}
+  }
+
+  if (!loaded) data = [];
+
+  loadBanner();
+  buildYearChips();
+  updateBadges();
+  render();
+
+  // Show sync indicator
+  if (source === 'local') {
+    showSyncNote('Showing local data — not synced from cloud yet');
+  }
+}
+
+function showSyncNote(msg) {
+  let el = document.getElementById('sync-note');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-note';
+    el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-size:11px;font-weight:500;z-index:999;background:#FFF7ED;color:#F59E0B;border:1px solid #F59E0B;box-shadow:0 2px 8px rgba(0,0,0,.1)';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .5s'; }, 5000);
+}
+
+function loadBanner() {
+  // Check if there's a _banner config in the data (object with id === '_banner')
+  const cfg = data.find(v => v.id === '_banner');
+  const hero = document.getElementById('heroBanner');
+  if (!hero) return;
+  const bannerUrl = cfg ? cfg.url : '';
+  if (bannerUrl) {
+    // Replace placeholder with actual image
+    const placeholder = hero.querySelector('.hero-placeholder');
+    if (placeholder) {
+      const img = document.createElement('img');
+      img.className = 'hero-img';
+      img.src = bannerUrl;
+      img.alt = 'Production Library Banner';
+      img.onerror = function() { this.style.display = 'none'; };
+      placeholder.replaceWith(img);
+    }
+    // Remove _banner from visible data
+    data = data.filter(v => v.id !== '_banner');
+  }
+  // Update text if provided
+  if (cfg && cfg.title) {
+    const t = hero.querySelector('.hero-title');
+    if (t) t.textContent = cfg.title;
+  }
+  if (cfg && cfg.subtitle) {
+    const s = hero.querySelector('.hero-sub');
+    if (s) s.textContent = cfg.subtitle;
+  }
+}
+
+function setCat(c) {
+  activeCat = c;
+  document.querySelectorAll('.ni').forEach(b => {
+    const on = b.dataset.cat === c;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  document.getElementById('page-title').textContent = c === 'all' ? 'All Assets' : c === 'star' ? 'Best for Proposals' : c;
+  render();
+}
+
+function setYr(y) {
+  activeYr = y;
+  document.querySelectorAll('#year-chips .chip').forEach(b => {
+    const on = b.dataset.yr === y;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  render();
+}
+
+function buildYearChips() {
+  const wrap = document.getElementById('year-chips');
+  const years = [...new Set(data.map(v => String(v.year)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+  const parts = ['<button class="chip on" type="button" data-yr="all" aria-pressed="true">All years</button>'];
+  for (const y of years) parts.push(`<button class="chip" type="button" data-yr="${esc(y)}" aria-pressed="false">${esc(y)}</button>`);
+  parts.push('<button class="chip" type="button" data-yr="star" aria-pressed="false">⭐ Best for Proposals</button>');
+  wrap.innerHTML = parts.join('');
+  wrap.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => setYr(btn.dataset.yr)));
+}
+
+function filtered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  return data.filter(v => {
+    if (q && !(v.title||'').toLowerCase().includes(q) && !(v.fmt||'').toLowerCase().includes(q) && !(v.tags||'').toLowerCase().includes(q) && !(v.desc||'').toLowerCase().includes(q)) return false;
+    if (activeCat === 'star' && !v.star) return false;
+    if (activeCat !== 'all' && activeCat !== 'star' && v.cat !== activeCat) return false;
+    if (activeYr === 'star' && !v.star) return false;
+    if (activeYr !== 'all' && activeYr !== 'star' && String(v.year) !== activeYr) return false;
+    return true;
+  });
+}
+
+function sorted(arr) {
+  const s = document.getElementById('sortSel').value;
+  return [...arr].sort((a,b) => {
+    if (s === 'alpha') return (a.title||'').localeCompare(b.title||'');
+    if (s === 'oldest') return (a.year||0) - (b.year||0);
+    return (b.year||0) - (a.year||0);
+  });
+}
+
+function updateBadges() {
+  const setBadge = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n; };
+  setBadge('cnt-all', data.length);
+  setBadge('cnt-star', data.filter(v=>v.star).length);
+  for (const c of ALL_CATS) setBadge('cnt-' + slug(c), data.filter(v=>v.cat===c).length);
+}
+
+function render() {
+  const f = sorted(filtered());
+  document.getElementById('result-txt').textContent = f.length + ' assets';
+
+  const topCats = ALL_CATS.map(c=>({c,n:data.filter(v=>v.cat===c).length})).sort((a,b)=>b.n-a.n).slice(0,3);
+  document.getElementById('stats-row').innerHTML = topCats.map(({c,n}) =>
+    `<div class="stat"><div class="stat-n">${n}</div><div class="stat-l">${esc(c)}</div></div>`
+  ).join('') + `<div class="stat"><div class="stat-n">${data.filter(v=>v.star).length}</div><div class="stat-l">Best for Proposals</div></div>`;
+
+  const grid = document.getElementById('grid');
+  if (!f.length) {
+    grid.innerHTML = `<div class="empty"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><p>No assets found.<br>Try different filters.</p></div>`;
+    return;
+  }
+  grid.innerHTML = f.map(v => {
+    const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
+    const safeLink = safeUrl(v.link);
+    const thumbUrl = (v.thumb && v.thumb.trim()) ? v.thumb.trim() : extractThumbFromLink(v.link);
+    const hasThumb = !!thumbUrl;
+    return `
+    <div class="card">
+      <button class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}" style="${hasThumb ? 'background-image:url(&quot;'+esc(thumbUrl)+'&quot;);background-size:cover;background-position:center;background-color:#1a1a2e' : ''}">
+        ${hasThumb ? '' : '<span class="thumb-bg"></span>'}
+        ${hasThumb ? '' : thumbIcon(v.cat)}
+        <span class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${esc(v.cat)}</span>
+        ${v.star ? '<span class="star-tag">⭐ Proposal</span>' : ''}
+        <span class="overlay"><span class="play"><svg width="14" height="14" fill="white" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg></span></span>
+      </button>
+      <div class="cbody">
+        <div class="ctitle">${esc(v.title)}</div>
+        ${v.desc ? `<div style="font-size:11px;color:var(--t3);margin-bottom:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(v.desc)}</div>` : ''}
+        <div class="ctags">
+          ${v.fmt ? `<span class="tag">${esc(v.fmt)}</span>` : ''}
+          ${tagArr.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}
+          <span class="tag">${esc(v.year)}</span>
+        </div>
+        <div class="cfoot">
+          <span class="yr">${esc(v.year)}</span>
+          <div class="cfoot-actions">
+            ${safeLink ? `<a class="dl-btn" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer" title="Download / Open"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a>` : ''}
+            <button class="copy-btn" type="button" data-link="${esc(safeLink)}" ${safeLink ? '' : 'disabled'}>
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.thumb[data-id]').forEach(el => el.addEventListener('click', () => previewAsset(Number(el.dataset.id))));
+  grid.querySelectorAll('.copy-btn[data-link]').forEach(btn => btn.addEventListener('click', () => copyLink(btn.dataset.link, btn)));
+}
+
+/* ── Auto-detect thumbnail from video link ─── */
+function extractThumbFromLink(link) {
+  if (!link || link === '#') return '';
+  let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg';
+  m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) return 'https://vumbnail.com/' + m[1] + '.jpg';
+  return '';
+}
+
+function thumbIcon(cat) {
+  const play = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 9-14 9V3z"/></svg>';
+  const cam = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
+  const user = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  const grid = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
+  const circle = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>';
+  const folder = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+  const pulse = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>';
+  const mic = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M17 10v1a5 5 0 0 1-10 0v-1"/></svg>';
+  const reel = '<svg width="34" height="34" fill="none" stroke="white" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>';
+  const icons = {
+    'Projects':folder,
+    'Basic Animation':play,'Medium Animation':play,'Advanced Animation':play,
+    'Medium Collage':grid,'Advanced Collage':grid,
+    'Instructor Led':user,
+    'Medium Drama':cam,'Advanced Drama':cam,
+    'Motion Graphics':circle,
+    'Promos':pulse,'AI Videos':mic,'Showreel':reel
+  };
+  return icons[cat] || play;
+}
+
+async function copyLink(link, btn) {
+  if (!link) return;
+  try { await navigator.clipboard.writeText(link); }
+  catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = link; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(_) {}
+    document.body.removeChild(ta);
+  }
+  const orig = btn.innerHTML;
+  btn.innerHTML = `<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+  setTimeout(() => { btn.innerHTML = orig; }, 2000);
+}
+
+/* ── Preview ─── */
+function buildEmbedUrl(link) {
+  if (!link) return null;
+  let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://www.youtube.com/embed/' + m[1] + '?autoplay=1';
+  m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) return 'https://player.vimeo.com/video/' + m[1] + '?autoplay=1';
+  if (link.includes('onedrive.live.com') || link.includes('sharepoint.com') || link.includes('1drv.ms')) {
+    if (link.includes('embed')) return link;
+    return link.replace('/view','/embed');
+  }
+  m = link.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/file/d/' + m[1] + '/preview';
+  return null;
+}
+
+function previewAsset(id) {
+  const item = data.find(v => v.id === id);
+  if (!item) return;
+  lastFocused = document.activeElement;
+  const safeLink = safeUrl(item.link);
+  const embedUrl = buildEmbedUrl(safeLink);
+  const tagArr = (item.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+  document.getElementById('preview-title').textContent = item.title || '';
+  const body = document.getElementById('preview-body');
+  if (embedUrl) {
+    body.innerHTML = `<iframe class="preview-frame" src="${esc(embedUrl)}" allowfullscreen allow="autoplay; encrypted-media" referrerpolicy="no-referrer" title="${esc(item.title||'Asset preview')}"></iframe>`;
+  } else {
+    body.innerHTML = `<div class="preview-nolink"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><p style="margin-top:12px">No embeddable preview.<br>${safeLink ? 'Use the link below to open the asset.' : 'Contact production to get the link.'}</p>${safeLink ? `<a href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer" style="color:#E50914;margin-top:10px;display:inline-block;font-size:12px">Open link in new tab →</a>` : ''}</div>`;
+  }
+  const descEl = document.getElementById('preview-desc');
+  descEl.textContent = item.desc || '';
+  descEl.style.display = item.desc ? 'block' : 'none';
+  const tagsEl = document.getElementById('preview-tags');
+  tagsEl.innerHTML = tagArr.map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+  tagsEl.style.display = tagArr.length ? 'flex' : 'none';
+  const dlWrap = document.getElementById('preview-dl-wrap');
+  dlWrap.innerHTML = safeLink
+    ? `<a class="preview-dl" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Open Asset</a>`
+    : '';
+  const pbg = document.getElementById('pbg');
+  pbg.classList.add('open');
+  pbg.setAttribute('aria-hidden', 'false');
+  document.getElementById('preview-close-btn').focus();
+}
+
+function closePreview() {
+  const pbg = document.getElementById('pbg');
+  pbg.classList.remove('open');
+  pbg.setAttribute('aria-hidden', 'true');
+  document.getElementById('preview-body').innerHTML = '';
+  if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+}
+
+/* ── LOGIN GATE ─── */
+// SHA-256 hash of access code "almentor2025"
+const PASS_HASH = 'd8c2a00be9ea7943df28632340db5858269507f17a1e34814ebcf24c4cc27951';
+const SESSION_KEY = 'mv-auth';
+const SESSION_HOURS = 8;
+
+async function hashStr(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+function isLoggedIn() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY));
+    if (!s) return false;
+    if (Date.now() - s.ts > SESSION_HOURS * 3600000) { sessionStorage.removeItem(SESSION_KEY); return false; }
+    return true;
+  } catch(e) { return false; }
+}
+
+function showApp() {
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.querySelector('.sidebar').style.display = '';
+  document.querySelector('.main').style.display = '';
+  document.getElementById('search').focus();
+  load();
+}
+
+async function doLogin() {
+  const passEl = document.getElementById('loginPass');
+  const errEl = document.getElementById('loginErr');
+  const btn = document.querySelector('.login-btn');
+  const pass = passEl.value;
+  errEl.textContent = '';
+  if (!pass) { errEl.textContent = 'Please enter the access code'; passEl.focus(); return; }
+  btn.disabled = true;
+  try {
+    const hash = await hashStr(pass);
+    if (hash === PASS_HASH) {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ts: Date.now()}));
+      showApp();
+    } else {
+      errEl.textContent = 'Wrong access code. Ask your admin for access.';
+      passEl.classList.add('error');
+      setTimeout(() => passEl.classList.remove('error'), 400);
+      passEl.select();
+    }
+  } catch(e) {
+    errEl.textContent = 'Login failed: ' + (e.message || 'try again');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ── Wire-up on DOM ready ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  // sidebar buttons
+  document.querySelectorAll('.ni[data-cat]').forEach(b => b.addEventListener('click', () => setCat(b.dataset.cat)));
+  // controls
+  document.getElementById('search').addEventListener('input', render);
+  document.getElementById('sortSel').addEventListener('change', render);
+  // modal
+  document.getElementById('preview-close-btn').addEventListener('click', closePreview);
+  document.getElementById('pbg').addEventListener('click', e => { if (e.target === e.currentTarget) closePreview(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('pbg').classList.contains('open')) closePreview();
+  });
+  // login form
+  document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); doLogin(); });
+
+  if (isLoggedIn()) {
+    showApp();
+  } else {
+    document.querySelector('.sidebar').style.display = 'none';
+    document.querySelector('.main').style.display = 'none';
+    document.getElementById('loginOverlay').classList.remove('hidden');
+    document.getElementById('loginPass').focus();
+  }
+});
+</script>
+</body>
+</html>
