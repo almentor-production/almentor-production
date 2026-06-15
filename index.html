@@ -381,20 +381,64 @@ function safeUrl(u) {
 
 /* ── Load data from cloud (same source as Admin) ─── */
 async function load() {
+  let loaded = false;
+  let source = '';
+
+  // Strategy 1: GitHub raw URL (published data)
   try {
     const resp = await fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'});
-    if (resp.ok) { data = await resp.json(); }
-    else { throw new Error('Cloud unavailable'); }
-  } catch(e) {
+    if (resp.ok) {
+      data = await resp.json();
+      loaded = true;
+      source = 'cloud';
+      // Also save to localStorage so we have a backup
+      try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
+    }
+  } catch(e) {}
+
+  // Strategy 2: localStorage (shared with Admin on same browser)
+  if (!loaded) {
+    try {
+      const r = localStorage.getItem('mv-assets');
+      if (r) {
+        data = JSON.parse(r);
+        loaded = true;
+        source = 'local';
+      }
+    } catch(e) {}
+  }
+
+  // Strategy 3: local data.json file fallback
+  if (!loaded) {
     try {
       const resp2 = await fetch('data.json?t=' + Date.now());
-      data = await resp2.json();
-    } catch(e2) { data = []; }
+      if (resp2.ok) { data = await resp2.json(); loaded = true; source = 'file'; }
+    } catch(e2) {}
   }
+
+  if (!loaded) data = [];
+
   loadBanner();
   buildYearChips();
   updateBadges();
   render();
+
+  // Show sync indicator
+  if (source === 'local') {
+    showSyncNote('Showing local data — not synced from cloud yet');
+  }
+}
+
+function showSyncNote(msg) {
+  let el = document.getElementById('sync-note');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-note';
+    el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-size:11px;font-weight:500;z-index:999;background:#FFF7ED;color:#F59E0B;border:1px solid #F59E0B;box-shadow:0 2px 8px rgba(0,0,0,.1)';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .5s'; }, 5000);
 }
 
 function loadBanner() {
