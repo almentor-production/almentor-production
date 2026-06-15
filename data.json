@@ -1,39 +1,15 @@
 [
   {
-    "id": 1781521696250,
-    "title": "NBE Project ++",
-    "cat": "Advanced Animation",
-    "year": "2023",
-    "fmt": "Animation",
-    "link": "https://drive.google.com/file/d/1EYVd8eXLormZOJrpg38vyD9ySskWl5Va/view?usp=drive_link",
+    "id": 1781526208313,
+    "title": "MOC",
+    "cat": "Medium Animation",
+    "year": "2025",
+    "fmt": "",
+    "link": "https://drive.google.com/file/d/19qVmsD15V2fTwBd6aTbna3pi6InUbk39/view?usp=sharing",
     "thumb": "",
     "tags": "",
     "desc": "",
-    "star": true
-  },
-  {
-    "id": 1781521620819,
-    "title": "NBE project+",
-    "cat": "Advanced Animation",
-    "year": "2023",
-    "fmt": "Animation",
-    "link": "https://drive.google.com/file/d/15J0AXmC81tVxpgNZCADrc1vFcwyFzPBI/view?usp=drive_link",
-    "thumb": "",
-    "tags": "",
-    "desc": "",
-    "star": true
-  },
-  {
-    "id": 1781519723236,
-    "title": "NBE project",
-    "cat": "Advanced Animation",
-    "year": "2023",
-    "fmt": "Animation",
-    "link": "https://drive.google.com/file/d/1ibo8nHSjdbQnZAPrfzsyBMV6hSx7NF9e/view?usp=drive_link",
-    "thumb": "",
-    "tags": "",
-    "desc": "",
-    "star": true
+    "star": false
   },
   {
     "id": 1781519553631,
@@ -149,6 +125,17 @@
     "star": true,
     "tags": "education,time management,soft skills",
     "desc": "Animated explainer for time management fundamentals"
+  },
+  {
+    "id": 2,
+    "title": "Advanced Animation – Bank Campaign",
+    "cat": "Advanced Animation",
+    "year": "2025",
+    "fmt": "Promo",
+    "link": "#",
+    "star": true,
+    "tags": "finance,banking,campaign",
+    "desc": "Full campaign animation for banking product launch"
   },
   {
     "id": 3,
