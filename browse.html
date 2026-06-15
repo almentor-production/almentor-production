@@ -384,28 +384,46 @@ async function load() {
   let loaded = false;
   let source = '';
 
+  // Get localStorage data first (may have admin's unsaved changes)
+  let localData = [];
+  try {
+    const r = localStorage.getItem('mv-assets');
+    if (r) localData = JSON.parse(r);
+  } catch(e) {}
+  const adminDirty = localStorage.getItem('mv-dirty') === '1';
+
   // Strategy 1: GitHub raw URL (published data)
+  let ghData = [];
   try {
     const resp = await fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'});
     if (resp.ok) {
-      data = await resp.json();
-      loaded = true;
-      source = 'cloud';
-      // Also save to localStorage so we have a backup
-      try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
+      ghData = await resp.json();
     }
   } catch(e) {}
 
-  // Strategy 2: localStorage (shared with Admin on same browser)
-  if (!loaded) {
-    try {
-      const r = localStorage.getItem('mv-assets');
-      if (r) {
-        data = JSON.parse(r);
-        loaded = true;
-        source = 'local';
-      }
-    } catch(e) {}
+  // Smart merge: use whichever has more items, or local if admin has unsaved work
+  if (ghData.length > 0 && localData.length > 0) {
+    if (adminDirty || localData.length > ghData.length) {
+      // Admin has unsaved changes — use local data (don't overwrite!)
+      data = localData;
+      loaded = true;
+      source = 'local+cloud';
+    } else {
+      // GitHub is up-to-date — use it and sync to localStorage
+      data = ghData;
+      loaded = true;
+      source = 'cloud';
+      try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
+    }
+  } else if (ghData.length > 0) {
+    data = ghData;
+    loaded = true;
+    source = 'cloud';
+    try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
+  } else if (localData.length > 0) {
+    data = localData;
+    loaded = true;
+    source = 'local';
   }
 
   // Strategy 3: local data.json file fallback
@@ -426,6 +444,8 @@ async function load() {
   // Show sync indicator
   if (source === 'local') {
     showSyncNote('Showing local data — not synced from cloud yet');
+  } else if (source === 'local+cloud') {
+    showSyncNote('Showing latest data (includes admin changes not yet published)');
   }
 }
 

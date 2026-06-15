@@ -7,6 +7,8 @@
 <meta name="description" content="almentor production asset library — your gateway to internal video productions, animations, and showreels.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0a0a0a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -18,13 +20,13 @@ body{font-family:'DM Sans',sans-serif;background:#0a0a0a;color:#fff;cursor:point
 
 /* Real library photo background */
 .bg-layer{position:fixed;inset:0;z-index:0}
-.bg-photo{position:absolute;inset:-20px;background:url('library-bg.jpg') center/cover no-repeat;filter:blur(6px);transform:scale(1.05);animation:slowZoom 30s ease-in-out infinite alternate}
-@keyframes slowZoom{0%{transform:scale(1.05)}100%{transform:scale(1.12)}}
+.bg-photo{position:absolute;inset:-10px;background:url('library-bg.jpg') center/cover no-repeat;filter:blur(2px);transform:scale(1.02);animation:slowZoom 30s ease-in-out infinite alternate}
+@keyframes slowZoom{0%{transform:scale(1.02)}100%{transform:scale(1.06)}}
 
-/* Dark cinematic overlay on top of photo */
+/* Dark cinematic overlay — lighter to show library details */
 .bg-overlay{position:absolute;inset:0;background:
-  radial-gradient(ellipse 60% 50% at 50% 45%, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%),
-  linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(10,5,2,0.5) 50%, rgba(0,0,0,0.6) 100%)}
+  radial-gradient(ellipse 60% 50% at 50% 45%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%),
+  linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(10,5,2,0.35) 50%, rgba(0,0,0,0.45) 100%)}
 
 /* Warm cinematic spotlight from above */
 .spotlight{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(255,180,80,0.12) 0%,rgba(255,140,50,0.05) 30%,transparent 65%);animation:breathe 6s ease-in-out infinite}
