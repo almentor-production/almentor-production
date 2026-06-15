@@ -386,7 +386,7 @@ input,select{font-family:'DM Sans',sans-serif}
     <div class="field"><label>Embed / Share Link (OneDrive, Vimeo, YouTube)</label><input id="mLink" placeholder="https://…" oninput="autoFillThumb()"></div>
     <div class="field"><label>Thumbnail Image URL (auto-filled from YouTube/Vimeo)</label>
       <div style="display:flex;gap:8px;align-items:center">
-        <input id="mThumb" placeholder="https://… or leave blank for auto-detect" style="flex:1">
+        <input id="mThumb" placeholder="https://… or leave blank for auto-detect" style="flex:1" oninput="updateThumbPreview()">
         <div id="mThumbPreview" style="width:64px;height:36px;border-radius:4px;background:var(--s2);border:1px solid var(--b1);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
           <svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         </div>
@@ -764,10 +764,12 @@ function render() {
   }
   grid.innerHTML = f.map(v => {
     const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
-    const hasThumb = v.thumb && v.thumb.trim();
+    // Use saved thumb, or auto-detect from video link
+    const thumbUrl = (v.thumb && v.thumb.trim()) ? v.thumb.trim() : extractThumbFromLink(v.link);
+    const hasThumb = !!thumbUrl;
     return `
     <div class="card">
-      <div class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" onclick="previewAsset(${v.id})" style="cursor:pointer;${hasThumb ? 'background:url(\''+v.thumb+'\') center/cover no-repeat;background-color:#1a1a2e' : ''}">
+      <div class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" onclick="previewAsset(${v.id})" style="cursor:pointer;${hasThumb ? 'background-image:url(&quot;'+thumbUrl+'&quot;);background-size:cover;background-position:center;background-color:#1a1a2e' : ''}">
         ${hasThumb ? '' : '<div class="thumb-bg"></div>'}
         ${hasThumb ? '' : thumbIcon(v.cat)}
         <div class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${v.cat}</div>
@@ -829,7 +831,7 @@ function thumbIcon(cat) {
 
 /* ── Auto-detect thumbnail from video link ─── */
 function extractThumbFromLink(link) {
-  if (!link) return '';
+  if (!link || link === '#') return '';
   // YouTube
   let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
   if (m) return 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg';
@@ -842,35 +844,37 @@ function extractThumbFromLink(link) {
 function autoFillThumb() {
   const link = document.getElementById('mLink').value.trim();
   const thumbInput = document.getElementById('mThumb');
-  const preview = document.getElementById('mThumbPreview');
   // Only auto-fill if user hasn't manually entered a thumb
   if (!thumbInput.value.trim()) {
     const auto = extractThumbFromLink(link);
     if (auto) {
       thumbInput.value = auto;
-      preview.innerHTML = `<img src="${auto}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='<svg width=16 height=16 fill=none stroke=#ccc stroke-width=1.5 viewBox=&quot;0 0 24 24&quot;><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>'">`;
+      showThumbPreview(auto);
     }
   } else {
-    updateThumbPreview();
+    showThumbPreview(thumbInput.value.trim());
   }
 }
 
-// Also update preview when user manually types a thumbnail URL
-document.addEventListener('DOMContentLoaded', () => {
-  const thumbInput = document.getElementById('mThumb');
-  if (thumbInput) {
-    thumbInput.addEventListener('input', updateThumbPreview);
+function showThumbPreview(url) {
+  const preview = document.getElementById('mThumbPreview');
+  if (!preview) return;
+  const fallback = '<svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+  if (url) {
+    const img = document.createElement('img');
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+    img.onerror = function() { preview.innerHTML = fallback; };
+    img.src = url;
+    preview.innerHTML = '';
+    preview.appendChild(img);
+  } else {
+    preview.innerHTML = fallback;
   }
-});
+}
 
 function updateThumbPreview() {
   const url = document.getElementById('mThumb').value.trim();
-  const preview = document.getElementById('mThumbPreview');
-  if (url) {
-    preview.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='<svg width=16 height=16 fill=none stroke=#ccc stroke-width=1.5 viewBox=&quot;0 0 24 24&quot;><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>'">`;
-  } else {
-    preview.innerHTML = '<svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
-  }
+  showThumbPreview(url);
 }
 
 function copyLink(link, btn) {

@@ -504,10 +504,11 @@ function render() {
   grid.innerHTML = f.map(v => {
     const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
     const safeLink = safeUrl(v.link);
-    const hasThumb = v.thumb && v.thumb.trim();
+    const thumbUrl = (v.thumb && v.thumb.trim()) ? v.thumb.trim() : extractThumbFromLink(v.link);
+    const hasThumb = !!thumbUrl;
     return `
     <div class="card">
-      <button class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}" style="${hasThumb ? 'background:url(\''+esc(v.thumb)+'\') center/cover no-repeat;background-color:#1a1a2e' : ''}">
+      <button class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}" style="${hasThumb ? 'background-image:url(&quot;'+esc(thumbUrl)+'&quot;);background-size:cover;background-position:center;background-color:#1a1a2e' : ''}">
         ${hasThumb ? '' : '<span class="thumb-bg"></span>'}
         ${hasThumb ? '' : thumbIcon(v.cat)}
         <span class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${esc(v.cat)}</span>
@@ -537,6 +538,16 @@ function render() {
   }).join('');
   grid.querySelectorAll('.thumb[data-id]').forEach(el => el.addEventListener('click', () => previewAsset(Number(el.dataset.id))));
   grid.querySelectorAll('.copy-btn[data-link]').forEach(btn => btn.addEventListener('click', () => copyLink(btn.dataset.link, btn)));
+}
+
+/* ── Auto-detect thumbnail from video link ─── */
+function extractThumbFromLink(link) {
+  if (!link || link === '#') return '';
+  let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg';
+  m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) return 'https://vumbnail.com/' + m[1] + '.jpg';
+  return '';
 }
 
 function thumbIcon(cat) {
