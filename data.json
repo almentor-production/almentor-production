@@ -1,51 +1,51 @@
 [
   {
-    "id": 1781526435565,
-    "title": "MOC-Collage",
-    "cat": "Medium Animation",
-    "year": "2025",
+    "id": 1781527895063,
+    "title": "Mawada",
+    "cat": "Projects",
+    "year": "2026",
     "fmt": "",
-    "link": "https://drive.google.com/file/d/1R7egAB3fODr6cXrBVbK6mlBSMeIkvHjV/view?usp=drive_link",
+    "link": "https://drive.google.com/file/d/1o_E3UZY4eFiEA3UiXT38e1EZPsGxzLUm/view?usp=drive_link",
     "thumb": "",
     "tags": "",
     "desc": "",
     "star": false
   },
   {
-    "id": 1781526409126,
-    "title": "MOC-Collage -  التراث الثقافي",
-    "cat": "Medium Animation",
-    "year": "2025",
-    "fmt": "",
-    "link": "https://drive.google.com/file/d/1R7egAB3fODr6cXrBVbK6mlBSMeIkvHjV/view?usp=drive_link",
+    "id": 1781521696250,
+    "title": "NBE Project ++",
+    "cat": "Advanced Animation",
+    "year": "2023",
+    "fmt": "Animation",
+    "link": "https://drive.google.com/file/d/1EYVd8eXLormZOJrpg38vyD9ySskWl5Va/view?usp=drive_link",
     "thumb": "",
     "tags": "",
     "desc": "",
-    "star": false
+    "star": true
   },
   {
-    "id": 1781526222510,
-    "title": "MOC لماذا يجب صون التراث الثقافي غير المادي",
-    "cat": "Medium Animation",
-    "year": "2025",
-    "fmt": "",
-    "link": "https://drive.google.com/file/d/1-QGYbc5ktwjAysaVEw9J4kCiZUdJ_dOA/view?usp=sharing",
+    "id": 1781521620819,
+    "title": "NBE project+",
+    "cat": "Advanced Animation",
+    "year": "2023",
+    "fmt": "Animation",
+    "link": "https://drive.google.com/file/d/15J0AXmC81tVxpgNZCADrc1vFcwyFzPBI/view?usp=drive_link",
     "thumb": "",
     "tags": "",
     "desc": "",
-    "star": false
+    "star": true
   },
   {
-    "id": 1781526208313,
-    "title": "MOC تطور عملية التوثيق الرقمي",
-    "cat": "Medium Animation",
-    "year": "2025",
-    "fmt": "",
-    "link": "https://drive.google.com/file/d/19qVmsD15V2fTwBd6aTbna3pi6InUbk39/view?usp=sharing",
+    "id": 1781519723236,
+    "title": "NBE project",
+    "cat": "Advanced Animation",
+    "year": "2023",
+    "fmt": "Animation",
+    "link": "https://drive.google.com/file/d/1ibo8nHSjdbQnZAPrfzsyBMV6hSx7NF9e/view?usp=drive_link",
     "thumb": "",
     "tags": "",
     "desc": "",
-    "star": false
+    "star": true
   },
   {
     "id": 1781519553631,
@@ -163,17 +163,6 @@
     "desc": "Animated explainer for time management fundamentals"
   },
   {
-    "id": 2,
-    "title": "Advanced Animation – Bank Campaign",
-    "cat": "Advanced Animation",
-    "year": "2025",
-    "fmt": "Promo",
-    "link": "#",
-    "star": true,
-    "tags": "finance,banking,campaign",
-    "desc": "Full campaign animation for banking product launch"
-  },
-  {
     "id": 3,
     "title": "Instructor Led – Leadership Course",
     "cat": "Instructor Led",
@@ -216,6 +205,17 @@
     "star": true,
     "tags": "real estate,app,motion",
     "desc": "Animated promo for a real estate mobile app"
+  },
+  {
+    "id": 7,
+    "title": "Medium Animation – SaaS Product Explainer",
+    "cat": "Medium Animation",
+    "year": "2024",
+    "fmt": "Product Video",
+    "link": "#",
+    "star": false,
+    "tags": "tech,saas,explainer",
+    "desc": "Product explainer animation for SaaS platform"
   },
   {
     "id": 8,
