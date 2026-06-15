@@ -16,35 +16,18 @@ body{font-family:'DM Sans',sans-serif;background:#0a0a0a;color:#fff;cursor:point
 /* ── CINEMATIC BACKGROUND ── */
 .scene{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:1}
 
-/* Dark library shelves effect */
+/* Real library photo background */
 .bg-layer{position:fixed;inset:0;z-index:0}
-.bg-gradient{position:absolute;inset:0;background:
-  radial-gradient(ellipse 80% 60% at 50% 40%, rgba(30,15,10,0.6) 0%, transparent 70%),
-  radial-gradient(ellipse 40% 50% at 20% 50%, rgba(139,69,19,0.08) 0%, transparent 60%),
-  radial-gradient(ellipse 40% 50% at 80% 50%, rgba(139,69,19,0.08) 0%, transparent 60%),
-  linear-gradient(180deg, #0a0a0a 0%, #0f0908 30%, #0d0a08 60%, #0a0a0a 100%)}
+.bg-photo{position:absolute;inset:-20px;background:url('library-bg.jpg') center/cover no-repeat;filter:blur(6px);transform:scale(1.05);animation:slowZoom 30s ease-in-out infinite alternate}
+@keyframes slowZoom{0%{transform:scale(1.05)}100%{transform:scale(1.12)}}
 
-/* Bookshelf lines - vertical pillars of light */
-.shelves{position:absolute;inset:0;opacity:0.04}
-.shelf{position:absolute;height:100%;background:linear-gradient(180deg,transparent 5%,rgba(180,130,80,0.6) 15%,rgba(180,130,80,0.3) 50%,rgba(180,130,80,0.6) 85%,transparent 95%)}
-.shelf:nth-child(1){left:8%;width:2px}
-.shelf:nth-child(2){left:18%;width:1.5px}
-.shelf:nth-child(3){left:32%;width:1px}
-.shelf:nth-child(4){left:48%;width:1px}
-.shelf:nth-child(5){left:52%;width:1px}
-.shelf:nth-child(6){left:68%;width:1.5px}
-.shelf:nth-child(7){left:82%;width:2px}
-.shelf:nth-child(8){left:92%;width:1.5px}
+/* Dark cinematic overlay on top of photo */
+.bg-overlay{position:absolute;inset:0;background:
+  radial-gradient(ellipse 60% 50% at 50% 45%, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%),
+  linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(10,5,2,0.5) 50%, rgba(0,0,0,0.6) 100%)}
 
-/* Horizontal shelf lines */
-.hshelf{position:absolute;width:100%;background:rgba(180,130,80,0.03);height:1px}
-.hshelf:nth-child(9){top:20%}
-.hshelf:nth-child(10){top:40%}
-.hshelf:nth-child(11){top:60%}
-.hshelf:nth-child(12){top:80%}
-
-/* Warm spotlight from above */
-.spotlight{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(255,180,80,0.07) 0%,rgba(255,140,50,0.03) 30%,transparent 70%);animation:breathe 6s ease-in-out infinite}
+/* Warm cinematic spotlight from above */
+.spotlight{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(255,180,80,0.12) 0%,rgba(255,140,50,0.05) 30%,transparent 65%);animation:breathe 6s ease-in-out infinite}
 @keyframes breathe{0%,100%{opacity:0.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
 
 /* Dust particles */
@@ -65,7 +48,9 @@ body{font-family:'DM Sans',sans-serif;background:#0a0a0a;color:#fff;cursor:point
 
 /* Logo */
 .logo-wrap{margin-bottom:12px}
-.logo-svg{height:36px;fill:#fff;filter:drop-shadow(0 2px 12px rgba(255,180,80,0.2));transition:all 0.6s ease}
+.logo-svg{height:36px;filter:drop-shadow(0 2px 12px rgba(255,180,80,0.2));transition:all 0.6s ease}
+.logo-svg .logo-text{fill:#fff}
+.logo-svg .logo-bar{fill:#E50914}
 body:hover .logo-svg{filter:drop-shadow(0 4px 24px rgba(229,9,20,0.4))}
 
 /* Red accent line */
@@ -106,12 +91,8 @@ body:hover .logo-svg{filter:drop-shadow(0 4px 24px rgba(229,9,20,0.4))}
 
 <!-- BACKGROUND LAYERS -->
 <div class="bg-layer">
-  <div class="bg-gradient"></div>
-  <div class="shelves">
-    <div class="shelf"></div><div class="shelf"></div><div class="shelf"></div><div class="shelf"></div>
-    <div class="shelf"></div><div class="shelf"></div><div class="shelf"></div><div class="shelf"></div>
-    <div class="hshelf"></div><div class="hshelf"></div><div class="hshelf"></div><div class="hshelf"></div>
-  </div>
+  <div class="bg-photo"></div>
+  <div class="bg-overlay"></div>
   <div class="spotlight"></div>
   <div class="particles" id="particles"></div>
   <div class="grain"></div>
@@ -126,7 +107,7 @@ body:hover .logo-svg{filter:drop-shadow(0 4px 24px rgba(229,9,20,0.4))}
 <div class="scene">
   <div class="content">
     <div class="logo-wrap">
-      <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
+      <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path class="logo-text" d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z"/><path class="logo-bar" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
     </div>
 
     <div class="accent-line"></div>
