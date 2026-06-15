@@ -504,11 +504,12 @@ function render() {
   grid.innerHTML = f.map(v => {
     const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
     const safeLink = safeUrl(v.link);
+    const hasThumb = v.thumb && v.thumb.trim();
     return `
     <div class="card">
-      <button class="thumb ${THUMB_CLASS[v.cat]||'thumb-show'}" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}">
-        <span class="thumb-bg"></span>
-        ${thumbIcon(v.cat)}
+      <button class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" type="button" data-id="${esc(v.id)}" aria-label="Preview: ${esc(v.title)}" style="${hasThumb ? 'background:url(\''+esc(v.thumb)+'\') center/cover no-repeat;background-color:#1a1a2e' : ''}">
+        ${hasThumb ? '' : '<span class="thumb-bg"></span>'}
+        ${hasThumb ? '' : thumbIcon(v.cat)}
         <span class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${esc(v.cat)}</span>
         ${v.star ? '<span class="star-tag">⭐ Proposal</span>' : ''}
         <span class="overlay"><span class="play"><svg width="14" height="14" fill="white" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg></span></span>

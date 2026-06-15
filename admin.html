@@ -383,7 +383,15 @@ input,select{font-family:'DM Sans',sans-serif}
         <option>Promo</option><option>Tutorial</option><option>Documentary</option>
       </select>
     </div>
-    <div class="field"><label>Embed / Share Link (OneDrive, Vimeo, YouTube)</label><input id="mLink" placeholder="https://…"></div>
+    <div class="field"><label>Embed / Share Link (OneDrive, Vimeo, YouTube)</label><input id="mLink" placeholder="https://…" oninput="autoFillThumb()"></div>
+    <div class="field"><label>Thumbnail Image URL (auto-filled from YouTube/Vimeo)</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="mThumb" placeholder="https://… or leave blank for auto-detect" style="flex:1">
+        <div id="mThumbPreview" style="width:64px;height:36px;border-radius:4px;background:var(--s2);border:1px solid var(--b1);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+          <svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+      </div>
+    </div>
     <div class="field"><label>Tags (comma separated)</label><input id="mTags" placeholder="e.g. real estate, luxury, north coast"></div>
     <div class="field"><label>Description</label><textarea id="mDesc" rows="2" placeholder="Brief description of the asset…"></textarea></div>
     <div class="star-check">
@@ -479,6 +487,7 @@ const GH_TOKEN = localStorage.getItem('mv-gh-token') || '';
 let data = [], activeCat = 'all', activeYr = 'all';
 let saving = false;
 let fileSha = '';  // needed by GitHub API to update the file
+let isDirty = false; // true if local changes haven't synced to GitHub yet
 
 /* ── Token setup (one-time) ─── */
 function setupToken() {
@@ -496,7 +505,38 @@ function getToken() {
 async function load() {
   const token = getToken();
   let loaded = false;
-  // Strategy 1: GitHub API (always latest, no cache)
+  const hasDirtyLocal = localStorage.getItem('mv-dirty') === '1';
+
+  // If we have unsaved local changes, load from localStorage first
+  // then try to push those changes to GitHub
+  if (hasDirtyLocal) {
+    try {
+      const r = localStorage.getItem('mv-assets');
+      if (r) {
+        data = JSON.parse(r);
+        loaded = true;
+        isDirty = true;
+        // Try to get the latest SHA so we can push our local changes
+        if (token) {
+          try {
+            const meta = await fetch(GH_API, {
+              headers: {'Authorization':'Bearer '+token},
+              cache: 'no-store'
+            });
+            if (meta.ok) { const j = await meta.json(); fileSha = j.sha; }
+          } catch(e) {}
+        }
+        updateBadges();
+        render();
+        showStatus('Loaded unsaved local changes — syncing now…', 'orange');
+        updateSyncDot('orange', 'Syncing…');
+        persist(); // push local changes to GitHub
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // Normal load: GitHub API first (always latest, no cache)
   if (token) {
     try {
       const resp = await fetch(GH_API, {
@@ -527,13 +567,16 @@ async function load() {
     } catch(e) { data = SEED; }
   }
   localStorage.setItem('mv-assets', JSON.stringify(data));
+  isDirty = false;
+  localStorage.removeItem('mv-dirty');
   updateBadges();
   render();
   if (!token) {
     showStatus('⚠ No GitHub token — changes won\'t sync. Click here to set up.', 'orange', true);
     updateSyncDot('orange', 'No token');
   } else {
-    showStatus('Loaded ' + data.length + ' assets from GitHub', 'green');
+    const assets = data.filter(v => v.id !== '_banner');
+    showStatus('Loaded ' + assets.length + ' assets from GitHub', 'green');
     updateSyncDot('green', 'Synced');
   }
 }
@@ -548,9 +591,12 @@ function updateSyncDot(color, text) {
 
 async function persist() {
   localStorage.setItem('mv-assets', JSON.stringify(data));
+  isDirty = true;
+  localStorage.setItem('mv-dirty', '1');
   const token = getToken();
   if (!token) {
     showStatus('⚠ No GitHub token — click here to set up', 'orange', true);
+    updateSyncDot('orange', 'Not synced');
     return;
   }
   if (saving) return;
@@ -579,21 +625,26 @@ async function persist() {
     if (resp.ok) {
       const result = await resp.json();
       fileSha = result.content.sha;
+      isDirty = false;
+      localStorage.removeItem('mv-dirty');
       showStatus('Synced! Team will see changes shortly.', 'green');
       updateSyncDot('green', 'Synced ✓');
     } else {
       const err = await resp.json();
       if (resp.status === 409) {
-        // SHA conflict — refetch and retry
+        // SHA conflict — refetch SHA and auto-retry once
         const meta2 = await fetch(GH_API, {headers:{'Authorization':'Bearer '+token}});
         if (meta2.ok) { const j2 = await meta2.json(); fileSha = j2.sha; }
-        showStatus('Version conflict — try saving again', 'orange');
+        saving = false;
+        return persist(); // auto-retry with correct SHA
       } else {
-        showStatus('Sync failed: ' + (err.message||'unknown error'), 'red');
+        showStatus('Sync failed: ' + (err.message||'unknown error') + ' — changes saved locally', 'red');
+        updateSyncDot('red', 'Not synced');
       }
     }
   } catch(e) {
-    showStatus('Offline — changes saved locally only', 'orange');
+    showStatus('Offline — changes saved locally, will retry', 'orange');
+    updateSyncDot('orange', 'Offline');
   }
   saving = false;
 }
@@ -713,11 +764,12 @@ function render() {
   }
   grid.innerHTML = f.map(v => {
     const tagArr = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean).slice(0,3);
+    const hasThumb = v.thumb && v.thumb.trim();
     return `
     <div class="card">
-      <div class="thumb ${THUMB_CLASS[v.cat]||'thumb-show'}" onclick="previewAsset(${v.id})" style="cursor:pointer">
-        <div class="thumb-bg"></div>
-        ${thumbIcon(v.cat)}
+      <div class="thumb ${hasThumb ? '' : (THUMB_CLASS[v.cat]||'thumb-show')}" onclick="previewAsset(${v.id})" style="cursor:pointer;${hasThumb ? 'background:url(\''+v.thumb+'\') center/cover no-repeat;background-color:#1a1a2e' : ''}">
+        ${hasThumb ? '' : '<div class="thumb-bg"></div>'}
+        ${hasThumb ? '' : thumbIcon(v.cat)}
         <div class="cat-tag ${CAT_CLASS[v.cat]||'c-show'}">${v.cat}</div>
         ${v.star ? '<div class="star-tag">⭐ Proposal</div>' : ''}
         <div class="overlay"><div class="play"><svg width="14" height="14" fill="white" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
@@ -775,6 +827,52 @@ function thumbIcon(cat) {
   return icons[cat] || play;
 }
 
+/* ── Auto-detect thumbnail from video link ─── */
+function extractThumbFromLink(link) {
+  if (!link) return '';
+  // YouTube
+  let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg';
+  // Vimeo — can't get thumbnail without API, but we can use vumbnail service
+  m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) return 'https://vumbnail.com/' + m[1] + '.jpg';
+  return '';
+}
+
+function autoFillThumb() {
+  const link = document.getElementById('mLink').value.trim();
+  const thumbInput = document.getElementById('mThumb');
+  const preview = document.getElementById('mThumbPreview');
+  // Only auto-fill if user hasn't manually entered a thumb
+  if (!thumbInput.value.trim()) {
+    const auto = extractThumbFromLink(link);
+    if (auto) {
+      thumbInput.value = auto;
+      preview.innerHTML = `<img src="${auto}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='<svg width=16 height=16 fill=none stroke=#ccc stroke-width=1.5 viewBox=&quot;0 0 24 24&quot;><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>'">`;
+    }
+  } else {
+    updateThumbPreview();
+  }
+}
+
+// Also update preview when user manually types a thumbnail URL
+document.addEventListener('DOMContentLoaded', () => {
+  const thumbInput = document.getElementById('mThumb');
+  if (thumbInput) {
+    thumbInput.addEventListener('input', updateThumbPreview);
+  }
+});
+
+function updateThumbPreview() {
+  const url = document.getElementById('mThumb').value.trim();
+  const preview = document.getElementById('mThumbPreview');
+  if (url) {
+    preview.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='<svg width=16 height=16 fill=none stroke=#ccc stroke-width=1.5 viewBox=&quot;0 0 24 24&quot;><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>'">`;
+  } else {
+    preview.innerHTML = '<svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+  }
+}
+
 function copyLink(link, btn) {
   navigator.clipboard.writeText(link).catch(()=>{});
   const orig = btn.innerHTML;
@@ -792,8 +890,9 @@ function openModal(isEdit) {
 function closeModal() {
   document.getElementById('mbg').classList.remove('open');
   editingId = null;
-  ['mTitle','mLink','mTags','mDesc'].forEach(id => document.getElementById(id).value = '');
+  ['mTitle','mLink','mThumb','mTags','mDesc'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('mStar').checked = false;
+  document.getElementById('mThumbPreview').innerHTML = '<svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
 }
 
 function editAsset(id) {
@@ -805,9 +904,11 @@ function editAsset(id) {
   document.getElementById('mYear').value = item.year;
   document.getElementById('mFmt').value = item.fmt;
   document.getElementById('mLink').value = item.link === '#' ? '' : item.link;
+  document.getElementById('mThumb').value = item.thumb || '';
   document.getElementById('mTags').value = item.tags || '';
   document.getElementById('mDesc').value = item.desc || '';
   document.getElementById('mStar').checked = item.star;
+  updateThumbPreview();
   openModal(true);
 }
 
@@ -852,12 +953,17 @@ function saveAsset() {
   if (!title) { document.getElementById('mTitle').focus(); return; }
   const cat = document.getElementById('mCat').value;
   if (!cat) { alert('Please select a category'); document.getElementById('mCat').focus(); return; }
+  const linkVal = document.getElementById('mLink').value.trim() || '#';
+  let thumbVal = document.getElementById('mThumb').value.trim();
+  // Auto-detect thumbnail if not manually set
+  if (!thumbVal) thumbVal = extractThumbFromLink(linkVal);
   const obj = {
     title,
     cat: document.getElementById('mCat').value,
     year: document.getElementById('mYear').value,
     fmt: document.getElementById('mFmt').value,
-    link: document.getElementById('mLink').value.trim() || '#',
+    link: linkVal,
+    thumb: thumbVal,
     tags: document.getElementById('mTags').value.trim(),
     desc: document.getElementById('mDesc').value.trim(),
     star: document.getElementById('mStar').checked
