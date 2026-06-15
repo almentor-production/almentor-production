@@ -186,5 +186,11 @@
     "star": true,
     "tags": "showreel,portfolio,best work",
     "desc": "Official almentor production showreel"
+  },
+  {
+    "id": "_banner",
+    "url": "banner.jpg",
+    "title": "Production Library",
+    "subtitle": "Browse, preview & download production assets"
   }
 ]
