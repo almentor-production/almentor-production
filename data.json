@@ -358,17 +358,6 @@
     "desc": "Brand logo reveal animation"
   },
   {
-    "id": 14,
-    "title": "AI Videos – AI-Generated Product Demo",
-    "cat": "AI Videos",
-    "year": "2025",
-    "fmt": "Product Video",
-    "link": "https://drive.google.com/file/d/1pvldkLu4SNQO8Igsd1RoOyuIdmhnksth/view?usp=sharing",
-    "star": true,
-    "tags": "ai,demo,product",
-    "desc": "AI-generated product walkthrough video"
-  },
-  {
     "id": "_banner",
     "url": "https://raw.githubusercontent.com/ahmedfaysalfouad-ops/media-vault/main/banner.jpg",
     "title": "Production Library",
