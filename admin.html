@@ -18,7 +18,12 @@ input,select{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-ser
 ::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
 
 /* ── SIDEBAR ─────────────────── */
-.sidebar{width:var(--sw);min-height:100vh;background:#1A1A1A;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:20}
+.sidebar{width:var(--sw);height:100vh;background:#1A1A1A;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:20;overflow:hidden}
+.sidebar .nav::-webkit-scrollbar{width:6px}
+.sidebar .nav::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+.sidebar .nav::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
+.logo{flex-shrink:0;cursor:pointer;transition:opacity .15s}
+.logo:hover{opacity:.85}
 .logo{padding:20px 16px 16px;border-bottom:1px solid #2a2a2a;display:flex;flex-direction:column;align-items:flex-start}
 .logo-svg{height:22px;margin-bottom:8px;fill:#fff}
 .logo-sub{font-size:9.5px;color:#666;letter-spacing:1.5px;text-transform:uppercase}
@@ -212,10 +217,10 @@ input,select{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-ser
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="logo">
-    <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z" fill="#fff"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
+  <button class="logo" id="logoBtn" type="button" onclick="setCat('all')" style="border:none;background:none;color:inherit;text-align:left;padding:20px 16px 16px;border-bottom:1px solid #2a2a2a;display:flex;flex-direction:column;align-items:flex-start;width:100%">
+    <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z" fill="#fff"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
     <div class="logo-sub">MEDIA VAULT <span style="background:#E50914;color:#fff;padding:1px 6px;border-radius:3px;font-size:8px;margin-left:4px;vertical-align:middle">ADMIN</span></div>
-  </div>
+  </button>
   <nav class="nav">
     <div class="nav-label">Browse</div>
     <button class="ni active" data-cat="all" onclick="setCat('all')">
@@ -384,9 +389,21 @@ input,select{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-ser
         <label style="font-size:12px;color:var(--t3)">Event type
           <select id="evt-filter-type" style="margin-left:6px;padding:6px 9px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
             <option value="">all</option>
-            <option value="login">login</option>
-            <option value="download">download</option>
-            <option value="copy_link">copy_link</option>
+            <optgroup label="User">
+              <option value="login">login</option>
+              <option value="download">download</option>
+              <option value="copy_link">copy_link</option>
+            </optgroup>
+            <optgroup label="Admin">
+              <option value="asset_create">asset_create</option>
+              <option value="asset_update">asset_update</option>
+              <option value="asset_delete">asset_delete</option>
+              <option value="category_clear">category_clear</option>
+              <option value="team_grant">team_grant</option>
+              <option value="team_revoke">team_revoke</option>
+              <option value="admin_demote">admin_demote</option>
+              <option value="banner_update">banner_update</option>
+            </optgroup>
           </select>
         </label>
         <label style="font-size:12px;color:var(--t3)">Since
@@ -491,6 +508,7 @@ input,select{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-ser
         </div>
       </div>
     </div>
+    <div class="field"><label>Project Folder (only used inside the Projects category)</label><input id="mFolder" list="folder-suggestions" placeholder="e.g. NBE Campaign 2026 — leave blank for none"><datalist id="folder-suggestions"></datalist><p style="font-size:11px;color:#888;margin-top:4px">Pick from existing folders or type a new one. Items with the same folder name will be grouped together.</p></div>
     <div class="field"><label>Tags (comma separated)</label><input id="mTags" placeholder="e.g. real estate, luxury, north coast"></div>
     <div class="field"><label>Description</label><textarea id="mDesc" rows="2" placeholder="Brief description of the asset…"></textarea></div>
     <div class="star-check">
@@ -649,17 +667,33 @@ function updateSyncDot(color, text) {
 /* ── CRUD helpers (one Supabase op per change) ─── */
 function rowFromItem(item) {
   return {
-    id:    item.id,
-    title: item.title || '',
-    cat:   item.cat   || '',
-    year:  item.year  || '',
-    fmt:   item.fmt   || '',
-    link:  item.link  || '',
-    thumb: item.thumb || '',
-    tags:  item.tags  || '',
-    descr: item.desc  || '',     // schema column is "descr" (reserved-word safe)
-    star:  !!item.star,
+    id:     item.id,
+    title:  item.title  || '',
+    cat:    item.cat    || '',
+    year:   item.year   || '',
+    fmt:    item.fmt    || '',
+    link:   item.link   || '',
+    thumb:  item.thumb  || '',
+    tags:   item.tags   || '',
+    descr:  item.desc   || '',     // schema column is "descr" (reserved-word safe)
+    star:   !!item.star,
+    folder: (item.folder || '').trim(),
   };
+}
+
+/* Log an admin action to the events table. Safe-fails on any error. */
+async function logAdminEvent(type, asset) {
+  if (!currentUser) return;
+  try {
+    await sb.from('events').insert({
+      event_type: type,
+      user_email: currentUser.email,
+      user_id:    currentUser.id,
+      asset_id:    asset && asset.id    != null ? asset.id    : null,
+      asset_title: asset && asset.title != null ? String(asset.title).slice(0, 200) : null,
+      user_agent: (navigator.userAgent || '').slice(0, 500),
+    });
+  } catch(e) { console.warn('admin event log failed:', e); }
 }
 
 async function upsertAsset(item) {
@@ -957,9 +991,16 @@ function openModal(isEdit) {
 function closeModal() {
   document.getElementById('mbg').classList.remove('open');
   editingId = null;
-  ['mTitle','mLink','mThumb','mTags','mDesc'].forEach(id => document.getElementById(id).value = '');
+  ['mTitle','mLink','mThumb','mTags','mDesc','mFolder'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('mStar').checked = false;
   document.getElementById('mThumbPreview').innerHTML = '<svg width="16" height="16" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+}
+
+function refreshFolderSuggestions() {
+  const list = document.getElementById('folder-suggestions');
+  if (!list) return;
+  const folders = [...new Set(data.filter(v => v.cat === 'Projects').map(v => (v.folder || '').trim()).filter(Boolean))].sort();
+  list.innerHTML = folders.map(f => `<option value="${esc(f)}"></option>`).join('');
 }
 
 function editAsset(id) {
@@ -974,7 +1015,9 @@ function editAsset(id) {
   document.getElementById('mThumb').value = item.thumb || '';
   document.getElementById('mTags').value = item.tags || '';
   document.getElementById('mDesc').value = item.desc || '';
+  document.getElementById('mFolder').value = item.folder || '';
   document.getElementById('mStar').checked = item.star;
+  refreshFolderSuggestions();
   updateThumbPreview();
   openModal(true);
 }
@@ -989,6 +1032,7 @@ async function clearCategory() {
   if (!confirm('Delete all ' + count + ' assets in "' + activeCat + '"?')) return;
   try {
     await deleteAssetsByCategory(activeCat);
+    logAdminEvent('category_clear', { title: activeCat });
     data = data.filter(v => v.cat !== activeCat);
     updateBadges(); render();
   } catch(e) {}
@@ -1000,6 +1044,7 @@ async function deleteAsset(id) {
   if (!confirm('Delete "' + item.title + '"?\n\nThis cannot be undone.')) return;
   try {
     await deleteAssetRow(id);
+    logAdminEvent('asset_delete', item);
     data = data.filter(v => v.id !== id);
     updateBadges(); render();
     showStatus('Deleted "' + item.title + '"', 'red');
@@ -1012,6 +1057,7 @@ async function duplicateAsset(id) {
   const copy = { ...item, id: Date.now(), title: item.title + ' (Copy)' };
   try {
     await upsertAsset(copy);
+    logAdminEvent('asset_create', copy);
     data.unshift(copy);
     updateBadges(); render();
     showStatus('Duplicated "' + item.title + '"', 'green');
@@ -1035,9 +1081,11 @@ async function saveAsset() {
     thumb: thumbVal,
     tags: document.getElementById('mTags').value.trim(),
     desc: document.getElementById('mDesc').value.trim(),
+    folder: document.getElementById('mFolder').value.trim(),
     star: document.getElementById('mStar').checked
   };
   let saved;
+  const isUpdate = !!editingId;
   if (editingId) {
     const idx = data.findIndex(v => v.id === editingId);
     saved = { ...(idx !== -1 ? data[idx] : {}), id: editingId, ...obj };
@@ -1046,6 +1094,7 @@ async function saveAsset() {
   }
   try {
     await upsertAsset(saved);
+    logAdminEvent(isUpdate ? 'asset_update' : 'asset_create', saved);
     if (editingId) {
       const idx = data.findIndex(v => v.id === editingId);
       if (idx !== -1) data[idx] = saved;
@@ -1241,6 +1290,7 @@ async function saveBannerSettings() {
   const position = document.getElementById('bannerPosition').value || 'center center';
   try {
     await saveBannerToDb({ url, title, subtitle, height, fit, position });
+    logAdminEvent('banner_update', { title: 'Banner ' + (url ? 'set' : 'cleared') });
     closeBannerSettings();
     showStatus('Banner updated! Team will see it shortly.', 'green');
   } catch(e) {}
@@ -1295,7 +1345,14 @@ async function loadEvents() {
   tbody.innerHTML = rows.map(r => {
     const when = new Date(r.created_at);
     const fmt = when.toLocaleString();
-    const typeBadge = `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:${r.event_type==='login'?'#DBEAFE':r.event_type==='download'?'#D1FAE5':'#FEF3C7'};color:${r.event_type==='login'?'#1E40AF':r.event_type==='download'?'#065F46':'#92400E'}">${esc(r.event_type)}</span>`;
+    // Color-code: user actions soft, admin actions bolder
+    const isAdminEvt = ['asset_create','asset_update','asset_delete','category_clear','team_grant','team_revoke','admin_demote','banner_update'].includes(r.event_type);
+    const colors = isAdminEvt
+      ? {bg:'#FCE7F3', fg:'#9D174D'}                                                       // pink for admin
+      : r.event_type==='login'    ? {bg:'#DBEAFE', fg:'#1E40AF'}                            // blue login
+      : r.event_type==='download' ? {bg:'#D1FAE5', fg:'#065F46'}                            // green download
+      : {bg:'#FEF3C7', fg:'#92400E'};                                                       // amber copy_link
+    const typeBadge = `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:${colors.bg};color:${colors.fg}">${esc(r.event_type)}</span>`;
     return `<tr style="border-top:1px solid var(--b1)"><td style="padding:8px 14px;color:var(--t2)">${esc(fmt)}</td><td style="padding:8px 14px">${esc(r.user_email||'')}</td><td style="padding:8px 14px">${typeBadge}</td><td style="padding:8px 14px;color:var(--t3)">${esc(r.asset_title||'')}</td></tr>`;
   }).join('');
 }
@@ -1362,6 +1419,7 @@ async function addAllowedEmail() {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Enter a valid email'); return; }
   const { error } = await sb.from('allowed_emails').upsert({ email, note, added_by: currentUser.email });
   if (error) { alert('Failed: ' + error.message); return; }
+  logAdminEvent('team_grant', { title: email + (note ? ' (' + note + ')' : '') });
   document.getElementById('team-add-email').value = '';
   document.getElementById('team-add-note').value = '';
   loadTeam();
@@ -1371,6 +1429,7 @@ async function removeAllowedEmail(email) {
   if (!confirm('Revoke access for ' + email + '?')) return;
   const { error } = await sb.from('allowed_emails').delete().eq('email', email);
   if (error) { alert('Failed: ' + error.message); return; }
+  logAdminEvent('team_revoke', { title: email });
   loadTeam();
 }
 
@@ -1378,6 +1437,7 @@ async function removeAdmin(userId) {
   if (!confirm('Demote this admin? They\'ll keep team access but lose edit rights.')) return;
   const { error } = await sb.from('admins').delete().eq('user_id', userId);
   if (error) { alert('Failed: ' + error.message); return; }
+  logAdminEvent('admin_demote', { title: 'user_id=' + userId });
   loadTeam();
 }
 
