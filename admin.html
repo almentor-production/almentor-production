@@ -1382,6 +1382,10 @@ function esc(s) {
 
 /* ── Team Access (allowed_emails + admins) ─── */
 async function loadTeam() {
+  // Fetch admins first so we can mark which allowed emails are already admins
+  const { data: admins, error: aErr } = await sb.from('admins').select('*').order('added_at', {ascending:false});
+  const adminEmails = new Set((admins || []).map(a => (a.email || '').toLowerCase()));
+
   // Allowed emails
   const tbody = document.getElementById('team-tbody');
   tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr>';
@@ -1391,19 +1395,29 @@ async function loadTeam() {
   } else if (!emails.length) {
     tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">No one on the allowlist yet.</td></tr>';
   } else {
-    tbody.innerHTML = emails.map(r => `<tr style="border-top:1px solid var(--b1)">
-      <td style="padding:8px 14px">${esc(r.email)}</td>
-      <td style="padding:8px 14px;color:var(--t3)">${esc(r.note||'')}</td>
-      <td style="padding:8px 14px;color:var(--t3)">${esc(new Date(r.added_at).toLocaleDateString())}</td>
-      <td style="padding:8px 14px;text-align:right"><button onclick="removeAllowedEmail('${esc(r.email).replace(/'/g,'&#39;')}')" style="background:none;border:1px solid var(--b1);color:var(--acc);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Revoke</button></td>
-    </tr>`).join('');
+    tbody.innerHTML = emails.map(r => {
+      const email = (r.email || '').toLowerCase();
+      const isAdminAlready = adminEmails.has(email);
+      const safeEmail = esc(email).replace(/'/g, '&#39;');
+      const actions = isAdminAlready
+        ? `<span style="font-size:11px;color:#10B981;font-weight:500">✓ Admin</span> &nbsp;
+           <button onclick="removeAllowedEmail('${safeEmail}')" style="background:none;border:1px solid var(--b1);color:var(--acc);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Revoke</button>`
+        : `<button onclick="promoteToAdmin('${safeEmail}')" style="background:#10B981;border:none;color:#fff;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;margin-right:6px">Make admin</button>
+           <button onclick="removeAllowedEmail('${safeEmail}')" style="background:none;border:1px solid var(--b1);color:var(--acc);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Revoke</button>`;
+      return `<tr style="border-top:1px solid var(--b1)">
+        <td style="padding:8px 14px">${esc(r.email)}</td>
+        <td style="padding:8px 14px;color:var(--t3)">${esc(r.note||'')}</td>
+        <td style="padding:8px 14px;color:var(--t3)">${esc(new Date(r.added_at).toLocaleDateString())}</td>
+        <td style="padding:8px 14px;text-align:right">${actions}</td>
+      </tr>`;
+    }).join('');
   }
-  // Admins
+  // Admins table
   const aBody = document.getElementById('admin-tbody');
-  aBody.innerHTML = '<tr><td colspan="3" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr>';
-  const { data: admins, error: aErr } = await sb.from('admins').select('*').order('added_at', {ascending:false});
   if (aErr) {
     aBody.innerHTML = `<tr><td colspan="3" style="padding:30px;text-align:center;color:var(--acc)">${esc(aErr.message)}</td></tr>`;
+  } else if (!admins.length) {
+    aBody.innerHTML = '<tr><td colspan="3" style="padding:30px;text-align:center;color:var(--t3)">No admins yet.</td></tr>';
   } else {
     aBody.innerHTML = admins.map(r => `<tr style="border-top:1px solid var(--b1)">
       <td style="padding:8px 14px">${esc(r.email)}</td>
@@ -1411,6 +1425,21 @@ async function loadTeam() {
       <td style="padding:8px 14px;text-align:right">${r.user_id === currentUser.id ? '<span style="font-size:11px;color:var(--t3)">(you)</span>' : `<button onclick="removeAdmin('${esc(r.user_id)}')" style="background:none;border:1px solid var(--b1);color:var(--acc);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Demote</button>`}</td>
     </tr>`).join('');
   }
+}
+
+async function promoteToAdmin(email) {
+  if (!confirm('Promote ' + email + ' to admin? They\'ll be able to edit assets and manage the team.')) return;
+  const { error } = await sb.rpc('promote_to_admin', { target_email: email });
+  if (error) {
+    if (/has not signed in/i.test(error.message)) {
+      alert('Cannot promote yet: ' + email + ' has not signed in to the site at least once.\n\nAsk them to open browse.html, enter their email, and click the magic link in their inbox. Then come back here and try again.');
+    } else {
+      alert('Failed: ' + error.message);
+    }
+    return;
+  }
+  logAdminEvent('team_grant', { title: email + ' → admin' });
+  loadTeam();
 }
 
 async function addAllowedEmail() {
