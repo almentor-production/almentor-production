@@ -724,6 +724,9 @@ function importData(event) {
 }
 
 function setCat(c) {
+  // Always switch back to the assets view when a category is picked,
+  // even if user was on Activity Log or Team Access.
+  if (typeof setActiveView === 'function') setActiveView('assets');
   activeCat = c;
   document.querySelectorAll('.ni').forEach(b => b.classList.toggle('active', b.dataset.cat === c));
   document.getElementById('page-title').textContent = c === 'all' ? 'All Assets' : c === 'star' ? 'Best for Proposals' : c;
@@ -731,6 +734,7 @@ function setCat(c) {
 }
 
 function setYr(y) {
+  if (typeof setActiveView === 'function') setActiveView('assets');
   activeYr = y;
   document.querySelectorAll('.chip[data-yr]').forEach(b => b.classList.toggle('on', b.dataset.yr === y));
   render();
@@ -854,15 +858,20 @@ function thumbIcon(cat) {
   return icons[cat] || play;
 }
 
-/* ── Auto-detect thumbnail from video link ─── */
+/* ── Auto-detect thumbnail from video link (YouTube / Vimeo / Google Drive) ─── */
 function extractThumbFromLink(link) {
   if (!link || link === '#') return '';
   // YouTube
   let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
   if (m) return 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg';
-  // Vimeo — can't get thumbnail without API, but we can use vumbnail service
+  // Vimeo
   m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if (m) return 'https://vumbnail.com/' + m[1] + '.jpg';
+  // Google Drive — requires the file to be shared publicly ("Anyone with the link can view")
+  m = link.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w640';
+  m = link.match(/drive\.google\.com\/.*[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w640';
   return '';
 }
 
