@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>almentor – Media Vault (Admin)</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
 :root{--bg:#F5F5F5;--s1:#FFFFFF;--s2:#F0F0F0;--s3:#E8E8E8;--b1:#E0E0E0;--b2:#CCCCCC;--acc:#E50914;--acc2:rgba(229,9,20,0.08);--t1:#1A1A1A;--t2:#555555;--t3:#888888;--sw:220px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;font-size:14px;-webkit-font-smoothing:antialiased}
-button{cursor:pointer;font-family:'DM Sans',sans-serif}
-input,select{font-family:'DM Sans',sans-serif}
+body{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;font-size:14px;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif}
+input,select{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
@@ -39,7 +39,7 @@ input,select{font-family:'DM Sans',sans-serif}
 /* ── MAIN ─────────────────── */
 .main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
 .topbar{position:sticky;top:0;z-index:10;background:rgba(245,245,245,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--b1);padding:14px 26px;display:flex;align-items:center;gap:14px}
-.page-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;flex-shrink:0}
+.page-title{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:19px;font-weight:700;flex-shrink:0}
 .search-wrap{flex:1;max-width:380px;position:relative}
 .search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3)}
 .search{width:100%;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;padding:8px 12px 8px 34px;outline:none;transition:border-color .15s}
@@ -56,7 +56,7 @@ input,select{font-family:'DM Sans',sans-serif}
 .content{padding:22px 26px;flex:1}
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:22px}
 .stat{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:14px 16px}
-.stat-n{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--t1)}
+.stat-n{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:24px;font-weight:700;color:var(--t1)}
 .stat-l{font-size:11px;color:var(--t3);margin-top:2px}
 .meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .result-txt{font-size:12px;color:var(--t3)}
@@ -117,7 +117,7 @@ input,select{font-family:'DM Sans',sans-serif}
 .modal{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:26px;width:420px;max-width:95vw;animation:mIn .25s ease}
 @keyframes mIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 .mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
-.mtitle{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.mtitle{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:17px;font-weight:700}
 .mclose{background:none;border:none;color:var(--t3);font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .15s}
 .mclose:hover{background:var(--s2);color:var(--t1)}
 .field{margin-bottom:14px}
@@ -155,7 +155,7 @@ input,select{font-family:'DM Sans',sans-serif}
 .preview-bg.open{display:flex}
 .preview-box{background:#111;border-radius:14px;width:720px;max-width:95vw;animation:mIn .25s ease;overflow:hidden}
 .preview-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #333}
-.preview-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.preview-title{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .preview-close{background:none;border:none;color:#999;font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;transition:background .15s}
 .preview-close:hover{background:#333;color:#fff}
 .preview-frame{width:100%;aspect-ratio:16/9;border:none}
@@ -170,7 +170,7 @@ input,select{font-family:'DM Sans',sans-serif}
 .login-box{background:#fff;border-radius:16px;padding:40px 36px;width:360px;max-width:90vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .login-box .logo-svg{height:26px;fill:#1A1A1A;margin-bottom:6px}
 .login-box .logo-sub{font-size:10px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px}
-.login-box h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;color:#1A1A1A}
+.login-box h2{font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;color:#1A1A1A}
 .login-box p{font-size:13px;color:#888;margin-bottom:22px}
 .login-input{width:100%;padding:11px 14px;border:1px solid #E0E0E0;border-radius:8px;font-size:14px;outline:none;text-align:center;letter-spacing:2px;transition:border-color .15s}
 .login-input:focus{border-color:#E50914}
@@ -376,7 +376,7 @@ input,select{font-family:'DM Sans',sans-serif}
 
     <!-- ACTIVITY LOG VIEW -->
     <section id="view-analytics" style="display:none">
-      <h2 style="font-family:'Syne',sans-serif;font-size:22px;margin-bottom:12px">Activity Log</h2>
+      <h2 style="font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:22px;margin-bottom:12px">Activity Log</h2>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center">
         <label style="font-size:12px;color:var(--t3)">Filter by email
           <input id="evt-filter-email" type="text" placeholder="any" style="margin-left:6px;padding:6px 9px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
@@ -411,7 +411,7 @@ input,select{font-family:'DM Sans',sans-serif}
 
     <!-- TEAM ACCESS VIEW -->
     <section id="view-team" style="display:none">
-      <h2 style="font-family:'Syne',sans-serif;font-size:22px;margin-bottom:6px">Team Access</h2>
+      <h2 style="font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:22px;margin-bottom:6px">Team Access</h2>
       <p style="color:var(--t3);font-size:13px;margin-bottom:18px">Only emails on this list can sign in to the team-facing site. Removing an email kicks them out at next page load.</p>
       <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
         <input id="team-add-email" type="email" placeholder="teammate@almentor.com" style="flex:1;min-width:240px;padding:9px 12px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
@@ -511,11 +511,40 @@ input,select{font-family:'DM Sans',sans-serif}
       <div class="mtitle">Banner Settings</div>
       <button class="mclose" onclick="closeBannerSettings()">✕</button>
     </div>
-    <div class="field"><label>Banner Image URL</label><input id="bannerUrl" placeholder="https://raw.githubusercontent.com/…/banner.jpg"><p style="font-size:11px;color:#888;margin-top:4px">Upload the image to GitHub repo, then paste the raw URL here</p></div>
+    <div class="field"><label>Banner Image URL</label><input id="bannerUrl" placeholder="https://almentor-production.github.io/almentor-production/banner.jpg"><p style="font-size:11px;color:#888;margin-top:4px">Upload the image to the GitHub repo, then paste its URL here.</p></div>
     <div class="field"><label>Banner Title</label><input id="bannerTitle" value="Production Library" placeholder="Production Library"></div>
     <div class="field"><label>Banner Subtitle</label><input id="bannerSubtitle" value="Browse, preview & download production assets" placeholder="Browse, preview & download…"></div>
-    <div id="bannerPreview" style="margin:12px 0;border-radius:10px;overflow:hidden;height:120px;background:#1a1a2e;position:relative">
-      <div style="position:absolute;bottom:10px;left:14px;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.5)" id="bannerPreviewTitle">Production Library</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div class="field"><label>Height</label>
+        <select id="bannerHeight">
+          <option value="280">Compact (280px)</option>
+          <option value="380" selected>Standard (380px)</option>
+          <option value="480">Large (480px)</option>
+          <option value="600">Hero (600px)</option>
+        </select>
+      </div>
+      <div class="field"><label>Fit</label>
+        <select id="bannerFit">
+          <option value="cover" selected>Cover (fill, may crop)</option>
+          <option value="contain">Contain (show whole image)</option>
+        </select>
+      </div>
+      <div class="field"><label>Position</label>
+        <select id="bannerPosition">
+          <option value="center center" selected>Center</option>
+          <option value="center top">Top</option>
+          <option value="center bottom">Bottom</option>
+          <option value="left center">Left</option>
+          <option value="right center">Right</option>
+          <option value="left top">Top-Left</option>
+          <option value="right top">Top-Right</option>
+          <option value="left bottom">Bottom-Left</option>
+          <option value="right bottom">Bottom-Right</option>
+        </select>
+      </div>
+    </div>
+    <div id="bannerPreview" style="margin:12px 0;border-radius:10px;overflow:hidden;height:180px;background:#1a1a2e;position:relative;background-size:cover;background-position:center">
+      <div style="position:absolute;bottom:14px;left:18px;color:#fff;font-family:'Aktiv Grotesk','Inter','Helvetica Neue',Arial,sans-serif;font-size:22px;font-weight:800;text-shadow:0 2px 12px rgba(0,0,0,.6)" id="bannerPreviewTitle">Production Library</div>
     </div>
     <div class="mactions">
       <button class="mcancel" onclick="closeBannerSettings()">Cancel</button>
@@ -1158,25 +1187,41 @@ async function signOut() {
 }
 
 /* ── Banner Settings ─── */
-function openBannerSettings() {
-  const cfg = data.find(v => v.id === '_banner') || {};
-  document.getElementById('bannerUrl').value = cfg.url || '';
-  document.getElementById('bannerTitle').value = cfg.title || 'Production Library';
+async function openBannerSettings() {
+  let cfg = {};
+  try {
+    const { data: row } = await sb.from('settings').select('value').eq('key','banner').maybeSingle();
+    if (row && row.value) cfg = row.value;
+  } catch(e) { console.warn('banner load failed:', e); }
+  document.getElementById('bannerUrl').value      = cfg.url      || '';
+  document.getElementById('bannerTitle').value    = cfg.title    || 'Production Library';
   document.getElementById('bannerSubtitle').value = cfg.subtitle || 'Browse, preview & download production assets';
+  document.getElementById('bannerHeight').value   = String(cfg.height || 380);
+  document.getElementById('bannerFit').value      = cfg.fit       || 'cover';
+  document.getElementById('bannerPosition').value = cfg.position  || 'center center';
   updateBannerPreview();
   document.getElementById('bannerBg').style.display = 'flex';
-  // Live preview
-  document.getElementById('bannerUrl').oninput = updateBannerPreview;
-  document.getElementById('bannerTitle').oninput = updateBannerPreview;
+  // Live preview on any field change
+  ['bannerUrl','bannerTitle','bannerHeight','bannerFit','bannerPosition'].forEach(id => {
+    const el = document.getElementById(id);
+    el.oninput = updateBannerPreview;
+    el.onchange = updateBannerPreview;
+  });
 }
 
 function updateBannerPreview() {
-  const url = document.getElementById('bannerUrl').value;
+  const url = document.getElementById('bannerUrl').value.trim();
   const title = document.getElementById('bannerTitle').value;
+  const fit = document.getElementById('bannerFit').value;
+  const position = document.getElementById('bannerPosition').value;
   const preview = document.getElementById('bannerPreview');
   const previewTitle = document.getElementById('bannerPreviewTitle');
   if (url) {
-    preview.style.background = `url('${url}') center/cover no-repeat`;
+    preview.style.backgroundImage = `url("${url}")`;
+    preview.style.backgroundSize = (fit === 'contain') ? 'contain' : 'cover';
+    preview.style.backgroundPosition = position;
+    preview.style.backgroundRepeat = 'no-repeat';
+    preview.style.background = preview.style.background; // noop to keep value
   } else {
     preview.style.background = 'linear-gradient(135deg,#0f0f0f,#1a1a2e,#0f3460)';
   }
@@ -1188,11 +1233,14 @@ function closeBannerSettings() {
 }
 
 async function saveBannerSettings() {
-  const url = document.getElementById('bannerUrl').value.trim();
-  const title = document.getElementById('bannerTitle').value.trim();
+  const url      = document.getElementById('bannerUrl').value.trim();
+  const title    = document.getElementById('bannerTitle').value.trim();
   const subtitle = document.getElementById('bannerSubtitle').value.trim();
+  const height   = parseInt(document.getElementById('bannerHeight').value, 10) || 380;
+  const fit      = document.getElementById('bannerFit').value || 'cover';
+  const position = document.getElementById('bannerPosition').value || 'center center';
   try {
-    await saveBannerToDb({ url, title, subtitle });
+    await saveBannerToDb({ url, title, subtitle, height, fit, position });
     closeBannerSettings();
     showStatus('Banner updated! Team will see it shortly.', 'green');
   } catch(e) {}
