@@ -1116,9 +1116,30 @@ async function sendMagicLink() {
 
 async function checkIsAdmin() {
   if (!currentUser) return false;
-  const { data: row, error } = await sb.from('admins').select('user_id').eq('user_id', currentUser.id).maybeSingle();
-  if (error) console.warn('admin check error:', error);
-  return !!row;
+  // Use direct fetch instead of sb.from() — works around a supabase-js issue
+  // where the FIRST .eq().maybeSingle() call on page load can hang indefinitely.
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.access_token) return false;
+    const url = window.SUPABASE_URL + '/rest/v1/admins?select=user_id&user_id=eq.' + encodeURIComponent(currentUser.id);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 6000);
+    const r = await fetch(url, {
+      headers: {
+        'apikey': window.SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + session.access_token,
+        'Accept': 'application/json',
+      },
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!r.ok) { console.warn('admin check status', r.status); return false; }
+    const rows = await r.json();
+    return Array.isArray(rows) && rows.length > 0;
+  } catch(e) {
+    console.warn('admin check error:', e);
+    return false;
+  }
 }
 
 async function signOut() {
@@ -1303,28 +1324,28 @@ async function removeAdmin(userId) {
   loadTeam();
 }
 
-/* ── Wire-up ─── */
-document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); sendMagicLink(); });
-document.getElementById('resendBtn').addEventListener('click', () => showLogin('login'));
-document.getElementById('signOutBtn').addEventListener('click', signOut);
+/* ── Wire-up (DOMContentLoaded ensures all elements exist + sb is ready) ─── */
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); sendMagicLink(); });
+  document.getElementById('resendBtn').addEventListener('click', () => showLogin('login'));
+  document.getElementById('signOutBtn').addEventListener('click', signOut);
 
-sb.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session && session.user) {
-    if (currentUser && currentUser.id === session.user.id) return;   // already in
-    currentUser = session.user;
-    isAdmin = await checkIsAdmin();
-    if (!isAdmin) {
-      document.getElementById('notAdminEmail').textContent = currentUser.email;
-      showLogin('notAdmin');
-    } else {
-      showApp();
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session && session.user) {
+      if (currentUser && currentUser.id === session.user.id) return;
+      currentUser = session.user;
+      isAdmin = await checkIsAdmin();
+      if (!isAdmin) {
+        document.getElementById('notAdminEmail').textContent = currentUser.email;
+        showLogin('notAdmin');
+      } else {
+        showApp();
+      }
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null; isAdmin = false; showLogin('login');
     }
-  } else if (event === 'SIGNED_OUT') {
-    currentUser = null; isAdmin = false; showLogin('login');
-  }
-});
+  });
 
-(async () => {
   const { data: { session } } = await sb.auth.getSession();
   if (session && session.user) {
     currentUser = session.user;
@@ -1337,7 +1358,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
   } else {
     showLogin('login');
   }
-})();
+});
 </script>
 </body>
 </html>
