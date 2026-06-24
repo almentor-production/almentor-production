@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>almentor – Media Vault (Admin)</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <style>
 :root{--bg:#F5F5F5;--s1:#FFFFFF;--s2:#F0F0F0;--s3:#E8E8E8;--b1:#E0E0E0;--b2:#CCCCCC;--acc:#E50914;--acc2:rgba(229,9,20,0.08);--t1:#1A1A1A;--t2:#555555;--t3:#888888;--sw:220px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -186,11 +188,25 @@ input,select{font-family:'DM Sans',sans-serif}
   <div class="login-box">
     <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
     <div class="logo-sub">MEDIA VAULT — ADMIN</div>
-    <h2>Admin Access</h2>
-    <p>Enter the admin code to manage assets</p>
-    <input class="login-input" id="loginPass" type="password" placeholder="Admin Code" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="login-btn" onclick="doLogin()">Enter</button>
-    <div class="login-error" id="loginErr"></div>
+    <form id="loginForm" novalidate>
+      <div id="loginView">
+        <h2>Admin Sign-In</h2>
+        <p>Enter your work email — we'll email you a one-time link.</p>
+        <input class="login-input" id="loginEmail" type="email" placeholder="you@almentor.com" autocomplete="email" inputmode="email" required style="letter-spacing:0;text-align:left">
+        <button class="login-btn" type="submit" id="loginBtn">Send sign-in link</button>
+        <div class="login-error" id="loginErr" role="alert" aria-live="polite"></div>
+      </div>
+      <div id="sentView" style="display:none">
+        <h2>Check your inbox</h2>
+        <p>We sent a sign-in link to <strong id="sentEmail"></strong>. Click it on this device to continue.</p>
+        <button class="login-btn" type="button" id="resendBtn" style="background:#666">Use a different email</button>
+      </div>
+      <div id="notAdminView" style="display:none">
+        <h2>Not an admin</h2>
+        <p>You're signed in as <strong id="notAdminEmail"></strong>, but this account isn't on the admin list.</p>
+        <button class="login-btn" type="button" id="signOutBtn" style="background:#666">Sign out</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -266,6 +282,20 @@ input,select{font-family:'DM Sans',sans-serif}
       <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span>
       Showreel <span class="badge" id="cnt-Showreel">0</span>
     </button>
+
+    <div class="nav-label">Admin</div>
+    <button class="ni" id="nav-analytics" onclick="showAnalytics()">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+      Activity Log
+    </button>
+    <button class="ni" id="nav-team" onclick="showTeam()">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      Team Access
+    </button>
+    <button class="ni" onclick="signOut()">
+      <span class="ic"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+      Sign Out
+    </button>
   </nav>
   <div class="sidebar-foot">
     <button class="add-asset-btn" onclick="openModal(false)">
@@ -310,10 +340,7 @@ input,select{font-family:'DM Sans',sans-serif}
         <option value="oldest">Oldest first</option>
         <option value="alpha">A → Z</option>
       </select>
-      <button onclick="setupToken()" title="Settings — GitHub Token" style="background:none;border:1px solid var(--b1);border-radius:7px;padding:7px 9px;color:var(--t3);display:flex;align-items:center;cursor:pointer">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <button onclick="load()" title="Refresh data from GitHub" style="background:none;border:1px solid var(--b1);border-radius:7px;padding:7px 9px;color:var(--t3);display:flex;align-items:center;cursor:pointer">
+      <button onclick="load()" title="Reload from server" style="background:none;border:1px solid var(--b1);border-radius:7px;padding:7px 9px;color:var(--t3);display:flex;align-items:center;cursor:pointer">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       </button>
     </div>
@@ -338,11 +365,83 @@ input,select{font-family:'DM Sans',sans-serif}
   </div>
 
   <div class="content">
-    <div class="stats" id="stats-row"></div>
-    <div class="meta-bar">
-      <span class="result-txt" id="result-txt"></span>
-    </div>
-    <div class="grid" id="grid"></div>
+    <!-- ASSETS VIEW (default) -->
+    <section id="view-assets">
+      <div class="stats" id="stats-row"></div>
+      <div class="meta-bar">
+        <span class="result-txt" id="result-txt"></span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ACTIVITY LOG VIEW -->
+    <section id="view-analytics" style="display:none">
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;margin-bottom:12px">Activity Log</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center">
+        <label style="font-size:12px;color:var(--t3)">Filter by email
+          <input id="evt-filter-email" type="text" placeholder="any" style="margin-left:6px;padding:6px 9px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
+        </label>
+        <label style="font-size:12px;color:var(--t3)">Event type
+          <select id="evt-filter-type" style="margin-left:6px;padding:6px 9px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
+            <option value="">all</option>
+            <option value="login">login</option>
+            <option value="download">download</option>
+            <option value="copy_link">copy_link</option>
+          </select>
+        </label>
+        <label style="font-size:12px;color:var(--t3)">Since
+          <input id="evt-filter-since" type="date" style="margin-left:6px;padding:6px 9px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
+        </label>
+        <button onclick="loadEvents()" style="padding:6px 14px;background:#1A1A1A;color:#fff;border:none;border-radius:7px;font-size:13px;cursor:pointer">Apply</button>
+        <button onclick="exportEvents()" style="padding:6px 14px;background:#10B981;color:#fff;border:none;border-radius:7px;font-size:13px;cursor:pointer">Export CSV</button>
+      </div>
+      <div id="evt-summary" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:18px"></div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden">
+        <table id="evt-table" style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead style="background:var(--s2)"><tr>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">When</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Who</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Event</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Asset</th>
+          </tr></thead>
+          <tbody id="evt-tbody"><tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TEAM ACCESS VIEW -->
+    <section id="view-team" style="display:none">
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;margin-bottom:6px">Team Access</h2>
+      <p style="color:var(--t3);font-size:13px;margin-bottom:18px">Only emails on this list can sign in to the team-facing site. Removing an email kicks them out at next page load.</p>
+      <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+        <input id="team-add-email" type="email" placeholder="teammate@almentor.com" style="flex:1;min-width:240px;padding:9px 12px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
+        <input id="team-add-note" type="text" placeholder="Note (e.g., role / department)" style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--b1);border-radius:7px;font-size:13px">
+        <button onclick="addAllowedEmail()" style="padding:9px 16px;background:#E50914;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer">Grant access</button>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead style="background:var(--s2)"><tr>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Email</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Note</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Added</th>
+            <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--t2)">Action</th>
+          </tr></thead>
+          <tbody id="team-tbody"><tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr></tbody>
+        </table>
+      </div>
+      <h3 style="margin-top:28px;margin-bottom:10px;font-size:15px">Admins</h3>
+      <p style="color:var(--t3);font-size:12px;margin-bottom:12px">Admins can edit assets and manage team access. To promote a user, they must sign in first; then run an SQL command (see SUPABASE-SETUP.md) or use the form below.</p>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:10px;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead style="background:var(--s2)"><tr>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Email</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:var(--t2)">Added</th>
+            <th style="padding:10px 14px;text-align:right;font-weight:600;color:var(--t2)">Action</th>
+          </tr></thead>
+          <tbody id="admin-tbody"><tr><td colspan="3" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -476,108 +575,37 @@ const SEED = [
   {id:15,title:'Showreel – almentor Production Reel 2025',cat:'Showreel',year:'2025',fmt:'Reel',link:'#',star:true,tags:'showreel,portfolio,best work',desc:'Official almentor production showreel'},
 ];
 
-/* ── GitHub API Config ─── */
-const GH_OWNER = 'almentor-production';
-const GH_REPO  = 'almentor-production';
-const GH_FILE  = 'data.json';
-const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
-const GH_RAW   = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${GH_FILE}`;
-const GH_TOKEN = localStorage.getItem('mv-gh-token') || '';
+/* ── Supabase client ─── */
+if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || /YOUR-PROJECT-REF|YOUR_PUBLIC_ANON_KEY/.test(window.SUPABASE_URL + window.SUPABASE_ANON_KEY)) {
+  document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif"><h2>Setup needed</h2><p>Edit <code>config.js</code> and paste your Supabase URL and anon key.</p></div>';
+  throw new Error('Missing Supabase config');
+}
+const sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
 let data = [], activeCat = 'all', activeYr = 'all';
 let saving = false;
-let fileSha = '';  // needed by GitHub API to update the file
-let isDirty = false; // true if local changes haven't synced to GitHub yet
+let currentUser = null;  // Supabase user once signed in
+let isAdmin = false;     // confirmed via admins table
 
-/* ── Token setup (one-time) ─── */
-function setupToken() {
-  const t = prompt('Paste your GitHub Personal Access Token here.\nThis is stored in your browser only and never shared.');
-  if (t && t.trim()) {
-    localStorage.setItem('mv-gh-token', t.trim());
-    location.reload();
-  }
-}
-
-function getToken() {
-  return localStorage.getItem('mv-gh-token') || '';
-}
+// Clean any legacy localStorage from previous (insecure) versions.
+try { ['mv-assets','mv-dirty','mv-gh-token','mv-admin-auth','mv-auth'].forEach(k => localStorage.removeItem(k)); } catch(_) {}
 
 async function load() {
-  const token = getToken();
-  let loaded = false;
-  const hasDirtyLocal = localStorage.getItem('mv-dirty') === '1';
-
-  // If we have unsaved local changes, load from localStorage first
-  // then try to push those changes to GitHub
-  if (hasDirtyLocal) {
-    try {
-      const r = localStorage.getItem('mv-assets');
-      if (r) {
-        data = JSON.parse(r);
-        loaded = true;
-        isDirty = true;
-        // Try to get the latest SHA so we can push our local changes
-        if (token) {
-          try {
-            const meta = await fetch(GH_API, {
-              headers: {'Authorization':'Bearer '+token},
-              cache: 'no-store'
-            });
-            if (meta.ok) { const j = await meta.json(); fileSha = j.sha; }
-          } catch(e) {}
-        }
-        updateBadges();
-        render();
-        showStatus('Loaded unsaved local changes — syncing now…', 'orange');
-        updateSyncDot('orange', 'Syncing…');
-        persist(); // push local changes to GitHub
-        return;
-      }
-    } catch(e) {}
-  }
-
-  // Normal load: GitHub API first (always latest, no cache)
-  if (token) {
-    try {
-      const resp = await fetch(GH_API, {
-        headers: {'Authorization':'Bearer '+token, 'Accept':'application/vnd.github.v3+json'},
-        cache: 'no-store'
-      });
-      if (resp.ok) {
-        const meta = await resp.json();
-        fileSha = meta.sha;
-        const text = decodeURIComponent(escape(atob(meta.content.replace(/\n/g,''))));
-        data = JSON.parse(text);
-        loaded = true;
-      }
-    } catch(e) { console.warn('GitHub API load failed:', e); }
-  }
-  // Strategy 2: raw.githubusercontent.com (may be cached up to 5 min)
-  if (!loaded) {
-    try {
-      const resp = await fetch(GH_RAW + '?t=' + Date.now(), {cache:'no-store'});
-      if (resp.ok) { data = await resp.json(); loaded = true; }
-    } catch(e) {}
-  }
-  // Strategy 3: localStorage fallback
-  if (!loaded) {
-    try {
-      const r = localStorage.getItem('mv-assets');
-      data = r ? JSON.parse(r) : SEED;
-    } catch(e) { data = SEED; }
-  }
-  localStorage.setItem('mv-assets', JSON.stringify(data));
-  isDirty = false;
-  localStorage.removeItem('mv-dirty');
-  updateBadges();
-  render();
-  if (!token) {
-    showStatus('⚠ No GitHub token — changes won\'t sync. Click here to set up.', 'orange', true);
-    updateSyncDot('orange', 'No token');
-  } else {
-    const assets = data.filter(v => v.id !== '_banner');
-    showStatus('Loaded ' + assets.length + ' assets from GitHub', 'green');
+  try {
+    const { data: rows, error } = await sb.from('assets').select('*').order('year', {ascending:false});
+    if (error) throw error;
+    data = (rows || []).map(r => ({ ...r, desc: r.descr }));
+    updateBadges();
+    render();
+    showStatus('Loaded ' + data.length + ' assets', 'green');
     updateSyncDot('green', 'Synced');
+  } catch(e) {
+    console.error('Load failed:', e);
+    showStatus('Couldn\'t load: ' + (e.message || 'unknown'), 'red');
+    updateSyncDot('red', 'Load failed');
+    data = [];
+    updateBadges();
+    render();
   }
 }
 
@@ -589,64 +617,52 @@ function updateSyncDot(color, text) {
   el.style.color = c;
 }
 
-async function persist() {
-  localStorage.setItem('mv-assets', JSON.stringify(data));
-  isDirty = true;
-  localStorage.setItem('mv-dirty', '1');
-  const token = getToken();
-  if (!token) {
-    showStatus('⚠ No GitHub token — click here to set up', 'orange', true);
-    updateSyncDot('orange', 'Not synced');
-    return;
-  }
-  if (saving) return;
+/* ── CRUD helpers (one Supabase op per change) ─── */
+function rowFromItem(item) {
+  return {
+    id:    item.id,
+    title: item.title || '',
+    cat:   item.cat   || '',
+    year:  item.year  || '',
+    fmt:   item.fmt   || '',
+    link:  item.link  || '',
+    thumb: item.thumb || '',
+    tags:  item.tags  || '',
+    descr: item.desc  || '',     // schema column is "descr" (reserved-word safe)
+    star:  !!item.star,
+  };
+}
+
+async function upsertAsset(item) {
   saving = true;
-  showStatus('Syncing to GitHub…', 'orange');
   updateSyncDot('orange', 'Saving…');
-  try {
-    // Get latest SHA if we don't have it
-    if (!fileSha) {
-      const meta = await fetch(GH_API, {headers:{'Authorization':'Bearer '+token}});
-      if (meta.ok) { const j = await meta.json(); fileSha = j.sha; }
-    }
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const resp = await fetch(GH_API, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: 'Update assets — ' + new Date().toLocaleString(),
-        content: content,
-        sha: fileSha
-      })
-    });
-    if (resp.ok) {
-      const result = await resp.json();
-      fileSha = result.content.sha;
-      isDirty = false;
-      localStorage.removeItem('mv-dirty');
-      showStatus('Synced! Team will see changes shortly.', 'green');
-      updateSyncDot('green', 'Synced ✓');
-    } else {
-      const err = await resp.json();
-      if (resp.status === 409) {
-        // SHA conflict — refetch SHA and auto-retry once
-        const meta2 = await fetch(GH_API, {headers:{'Authorization':'Bearer '+token}});
-        if (meta2.ok) { const j2 = await meta2.json(); fileSha = j2.sha; }
-        saving = false;
-        return persist(); // auto-retry with correct SHA
-      } else {
-        showStatus('Sync failed: ' + (err.message||'unknown error') + ' — changes saved locally', 'red');
-        updateSyncDot('red', 'Not synced');
-      }
-    }
-  } catch(e) {
-    showStatus('Offline — changes saved locally, will retry', 'orange');
-    updateSyncDot('orange', 'Offline');
-  }
+  const { error } = await sb.from('assets').upsert(rowFromItem(item));
   saving = false;
+  if (error) { showStatus('Save failed: ' + error.message, 'red'); updateSyncDot('red', 'Save failed'); throw error; }
+  showStatus('Saved.', 'green'); updateSyncDot('green', 'Synced ✓');
+}
+
+async function deleteAssetRow(id) {
+  saving = true;
+  updateSyncDot('orange', 'Deleting…');
+  const { error } = await sb.from('assets').delete().eq('id', id);
+  saving = false;
+  if (error) { showStatus('Delete failed: ' + error.message, 'red'); updateSyncDot('red', 'Delete failed'); throw error; }
+  updateSyncDot('green', 'Synced ✓');
+}
+
+async function deleteAssetsByCategory(cat) {
+  saving = true;
+  updateSyncDot('orange', 'Deleting…');
+  const { error } = await sb.from('assets').delete().eq('cat', cat);
+  saving = false;
+  if (error) { showStatus('Delete failed: ' + error.message, 'red'); updateSyncDot('red', 'Delete failed'); throw error; }
+  updateSyncDot('green', 'Synced ✓');
+}
+
+async function saveBannerToDb(banner) {
+  const { error } = await sb.from('settings').upsert({ key: 'banner', value: banner });
+  if (error) { showStatus('Banner save failed: ' + error.message, 'red'); throw error; }
 }
 
 function showStatus(msg, color, clickable) {
@@ -682,17 +698,26 @@ function importData(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = async function(e) {
     try {
       const imported = JSON.parse(e.target.result);
       if (!Array.isArray(imported)) { alert('Invalid data.json format'); return; }
-      if (!confirm('Replace all current data with imported file? (' + imported.length + ' assets)')) return;
-      data = imported;
-      persist();
-      updateBadges();
-      render();
-      alert('Imported ' + data.length + ' assets successfully!');
-    } catch(err) { alert('Error reading file: ' + err.message); }
+      if (!confirm('Replace all current data with imported file? (' + imported.length + ' assets)\n\nThis deletes ALL existing assets first.')) return;
+      saving = true; updateSyncDot('orange', 'Importing…');
+      // Drop existing then bulk-insert.
+      const del = await sb.from('assets').delete().neq('id', -1);
+      if (del.error) throw del.error;
+      const rows = imported.filter(it => it.id !== '_banner').map(it => rowFromItem({...it, id: it.id || Date.now() + Math.floor(Math.random()*1000)}));
+      const ins = await sb.from('assets').insert(rows);
+      if (ins.error) throw ins.error;
+      saving = false;
+      await load();
+      alert('Imported ' + rows.length + ' assets successfully!');
+    } catch(err) {
+      saving = false;
+      updateSyncDot('red', 'Import failed');
+      alert('Import failed: ' + (err.message || err));
+    }
   };
   reader.readAsText(file);
   event.target.value = '';
@@ -916,54 +941,56 @@ function editAsset(id) {
   openModal(true);
 }
 
-function clearCategory() {
+async function clearCategory() {
   if (activeCat === 'all' || activeCat === 'star') {
-    alert('اختار category معينة من الجنب الأول');
+    alert('Pick a category first');
     return;
   }
   const count = data.filter(v => v.cat === activeCat).length;
   if (!count) { alert('No assets in this category'); return; }
   if (!confirm('Delete all ' + count + ' assets in "' + activeCat + '"?')) return;
-  data = data.filter(v => v.cat !== activeCat);
-  persist();
-  updateBadges();
-  render();
+  try {
+    await deleteAssetsByCategory(activeCat);
+    data = data.filter(v => v.cat !== activeCat);
+    updateBadges(); render();
+  } catch(e) {}
 }
 
-function deleteAsset(id) {
+async function deleteAsset(id) {
   const item = data.find(v => v.id === id);
   if (!item) return;
   if (!confirm('Delete "' + item.title + '"?\n\nThis cannot be undone.')) return;
-  data = data.filter(v => v.id !== id);
-  persist();
-  updateBadges();
-  render();
-  showStatus('Deleted "' + item.title + '"', 'red');
+  try {
+    await deleteAssetRow(id);
+    data = data.filter(v => v.id !== id);
+    updateBadges(); render();
+    showStatus('Deleted "' + item.title + '"', 'red');
+  } catch(e) {}
 }
 
-function duplicateAsset(id) {
+async function duplicateAsset(id) {
   const item = data.find(v => v.id === id);
   if (!item) return;
   const copy = { ...item, id: Date.now(), title: item.title + ' (Copy)' };
-  data.unshift(copy);
-  persist();
-  updateBadges();
-  render();
-  showStatus('Duplicated "' + item.title + '"', 'green');
+  try {
+    await upsertAsset(copy);
+    data.unshift(copy);
+    updateBadges(); render();
+    showStatus('Duplicated "' + item.title + '"', 'green');
+  } catch(e) {}
 }
 
-function saveAsset() {
+async function saveAsset() {
   const title = document.getElementById('mTitle').value.trim();
   if (!title) { document.getElementById('mTitle').focus(); return; }
   const cat = document.getElementById('mCat').value;
   if (!cat) { alert('Please select a category'); document.getElementById('mCat').focus(); return; }
   const linkVal = document.getElementById('mLink').value.trim() || '#';
   let thumbVal = document.getElementById('mThumb').value.trim();
-  // Auto-detect thumbnail if not manually set
   if (!thumbVal) thumbVal = extractThumbFromLink(linkVal);
   const obj = {
     title,
-    cat: document.getElementById('mCat').value,
+    cat,
     year: document.getElementById('mYear').value,
     fmt: document.getElementById('mFmt').value,
     link: linkVal,
@@ -972,16 +999,23 @@ function saveAsset() {
     desc: document.getElementById('mDesc').value.trim(),
     star: document.getElementById('mStar').checked
   };
+  let saved;
   if (editingId) {
     const idx = data.findIndex(v => v.id === editingId);
-    if (idx !== -1) { data[idx] = { ...data[idx], ...obj }; }
+    saved = { ...(idx !== -1 ? data[idx] : {}), id: editingId, ...obj };
   } else {
-    data.unshift({ id: Date.now(), ...obj });
+    saved = { id: Date.now(), ...obj };
   }
-  persist();
-  updateBadges();
-  closeModal();
-  render();
+  try {
+    await upsertAsset(saved);
+    if (editingId) {
+      const idx = data.findIndex(v => v.id === editingId);
+      if (idx !== -1) data[idx] = saved;
+    } else {
+      data.unshift(saved);
+    }
+    updateBadges(); closeModal(); render();
+  } catch(e) {}
 }
 
 /* ── Preview Modal ─── */
@@ -1037,25 +1071,7 @@ function closePreview() {
 document.getElementById('mbg').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
 document.getElementById('pbg').addEventListener('click', e => { if(e.target===e.currentTarget) closePreview(); });
 
-/* ── LOGIN GATE ─── */
-const PASS_HASH = 'd8c2a00be9ea7943df28632340db5858269507f17a1e34814ebcf24c4cc27951';
-const SESSION_KEY = 'mv-admin-auth';
-const SESSION_HOURS = 8;
-
-async function hashStr(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
-}
-
-function isLoggedIn() {
-  try {
-    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY));
-    if (!s) return false;
-    if (Date.now() - s.ts > SESSION_HOURS * 3600000) { sessionStorage.removeItem(SESSION_KEY); return false; }
-    return true;
-  } catch(e) { return false; }
-}
-
+/* ── AUTH: Supabase Magic Link + admin check ─── */
 function showApp() {
   document.getElementById('loginOverlay').classList.add('hidden');
   document.querySelector('.sidebar').style.display = '';
@@ -1063,19 +1079,52 @@ function showApp() {
   load();
 }
 
-async function doLogin() {
-  const pass = document.getElementById('loginPass').value;
-  const errEl = document.getElementById('loginErr');
-  if (!pass) { errEl.textContent = 'Please enter the admin code'; return; }
-  const hash = await hashStr(pass);
-  if (hash === PASS_HASH) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ts: Date.now()}));
-    showApp();
-  } else {
-    errEl.textContent = 'Wrong admin code.';
-    document.getElementById('loginPass').classList.add('error');
-    setTimeout(() => document.getElementById('loginPass').classList.remove('error'), 400);
+function showLogin(view) {
+  document.querySelector('.sidebar').style.display = 'none';
+  document.querySelector('.main').style.display = 'none';
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginView').style.display = (view === 'login' || !view) ? '' : 'none';
+  document.getElementById('sentView').style.display = view === 'sent' ? '' : 'none';
+  document.getElementById('notAdminView').style.display = view === 'notAdmin' ? '' : 'none';
+  if (!view || view === 'login') {
+    const e = document.getElementById('loginEmail'); if (e) e.focus();
   }
+}
+
+async function sendMagicLink() {
+  const emailEl = document.getElementById('loginEmail');
+  const errEl   = document.getElementById('loginErr');
+  const btn     = document.getElementById('loginBtn');
+  errEl.textContent = '';
+  const email = (emailEl.value || '').trim().toLowerCase();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.'; emailEl.focus(); return;
+  }
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const redirectTo = window.location.href.split('#')[0];
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
+    if (error) throw error;
+    document.getElementById('sentEmail').textContent = email;
+    showLogin('sent');
+  } catch(e) {
+    errEl.textContent = 'Couldn\'t send link: ' + (e.message || 'try again');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send sign-in link';
+  }
+}
+
+async function checkIsAdmin() {
+  if (!currentUser) return false;
+  const { data: row, error } = await sb.from('admins').select('user_id').eq('user_id', currentUser.id).maybeSingle();
+  if (error) console.warn('admin check error:', error);
+  return !!row;
+}
+
+async function signOut() {
+  try { await sb.auth.signOut(); } catch(_) {}
+  currentUser = null; isAdmin = false;
+  location.reload();
 }
 
 /* ── Banner Settings ─── */
@@ -1108,31 +1157,187 @@ function closeBannerSettings() {
   document.getElementById('bannerBg').style.display = 'none';
 }
 
-function saveBannerSettings() {
+async function saveBannerSettings() {
   const url = document.getElementById('bannerUrl').value.trim();
   const title = document.getElementById('bannerTitle').value.trim();
   const subtitle = document.getElementById('bannerSubtitle').value.trim();
-  // Remove old config
-  data = data.filter(v => v.id !== '_banner');
-  // Add new config at the end
-  if (url || title !== 'Production Library' || subtitle !== 'Browse, preview & download production assets') {
-    data.push({ id: '_banner', url, title, subtitle });
-  }
-  persist();
-  closeBannerSettings();
-  showStatus('Banner updated! Team will see it shortly.', 'green');
+  try {
+    await saveBannerToDb({ url, title, subtitle });
+    closeBannerSettings();
+    showStatus('Banner updated! Team will see it shortly.', 'green');
+  } catch(e) {}
 }
 
 document.getElementById('bannerBg').addEventListener('click', e => { if(e.target===e.currentTarget) closeBannerSettings(); });
 
-if (isLoggedIn()) {
-  showApp();
-} else {
-  document.querySelector('.sidebar').style.display = 'none';
-  document.querySelector('.main').style.display = 'none';
-  document.getElementById('loginOverlay').classList.remove('hidden');
-  document.getElementById('loginPass').focus();
+/* ── View switching ─── */
+function setActiveView(name) {
+  document.getElementById('view-assets').style.display    = name === 'assets'    ? '' : 'none';
+  document.getElementById('view-analytics').style.display = name === 'analytics' ? '' : 'none';
+  document.getElementById('view-team').style.display      = name === 'team'      ? '' : 'none';
+  document.querySelectorAll('.ni').forEach(b => b.classList.remove('active'));
+  if (name === 'analytics') document.getElementById('nav-analytics').classList.add('active');
+  else if (name === 'team') document.getElementById('nav-team').classList.add('active');
 }
+function showAnalytics() { setActiveView('analytics'); loadEvents(); }
+function showTeam()      { setActiveView('team'); loadTeam(); }
+
+/* ── Activity Log (events) ─── */
+async function loadEvents() {
+  const tbody = document.getElementById('evt-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr>';
+  let q = sb.from('events').select('*').order('created_at', {ascending:false}).limit(500);
+  const email = document.getElementById('evt-filter-email').value.trim().toLowerCase();
+  const type = document.getElementById('evt-filter-type').value;
+  const since = document.getElementById('evt-filter-since').value;
+  if (email) q = q.ilike('user_email', '%' + email + '%');
+  if (type)  q = q.eq('event_type', type);
+  if (since) q = q.gte('created_at', new Date(since).toISOString());
+  const { data: rows, error } = await q;
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--acc)">Failed: ${(error.message||'').replace(/[<>]/g,'')}</td></tr>`;
+    return;
+  }
+  // Summary cards
+  const counts = {login:0, download:0, copy_link:0};
+  const emails = new Set();
+  for (const r of rows) { counts[r.event_type] = (counts[r.event_type]||0)+1; emails.add(r.user_email); }
+  document.getElementById('evt-summary').innerHTML = [
+    {l:'Events', n: rows.length, c:'#1A1A1A'},
+    {l:'Unique users', n: emails.size, c:'#E50914'},
+    {l:'Logins', n: counts.login, c:'#3B82F6'},
+    {l:'Downloads', n: counts.download, c:'#10B981'},
+    {l:'Link copies', n: counts.copy_link, c:'#F59E0B'},
+  ].map(s => `<div class="stat" style="border-left:3px solid ${s.c}"><div class="stat-n" style="color:${s.c}">${s.n}</div><div class="stat-l">${s.l}</div></div>`).join('');
+  // Table
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">No events match.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const when = new Date(r.created_at);
+    const fmt = when.toLocaleString();
+    const typeBadge = `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:${r.event_type==='login'?'#DBEAFE':r.event_type==='download'?'#D1FAE5':'#FEF3C7'};color:${r.event_type==='login'?'#1E40AF':r.event_type==='download'?'#065F46':'#92400E'}">${esc(r.event_type)}</span>`;
+    return `<tr style="border-top:1px solid var(--b1)"><td style="padding:8px 14px;color:var(--t2)">${esc(fmt)}</td><td style="padding:8px 14px">${esc(r.user_email||'')}</td><td style="padding:8px 14px">${typeBadge}</td><td style="padding:8px 14px;color:var(--t3)">${esc(r.asset_title||'')}</td></tr>`;
+  }).join('');
+}
+
+async function exportEvents() {
+  const { data: rows, error } = await sb.from('events').select('*').order('created_at', {ascending:false}).limit(5000);
+  if (error) { alert('Export failed: ' + error.message); return; }
+  const header = ['created_at','user_email','event_type','asset_id','asset_title','user_agent'];
+  const lines = [header.join(',')];
+  for (const r of rows) {
+    lines.push(header.map(h => {
+      const v = r[h] == null ? '' : String(r[h]);
+      return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+    }).join(','));
+  }
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'media-vault-activity.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ── Team Access (allowed_emails + admins) ─── */
+async function loadTeam() {
+  // Allowed emails
+  const tbody = document.getElementById('team-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr>';
+  const { data: emails, error } = await sb.from('allowed_emails').select('*').order('added_at', {ascending:false});
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--acc)">${esc(error.message)}</td></tr>`;
+  } else if (!emails.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--t3)">No one on the allowlist yet.</td></tr>';
+  } else {
+    tbody.innerHTML = emails.map(r => `<tr style="border-top:1px solid var(--b1)">
+      <td style="padding:8px 14px">${esc(r.email)}</td>
+      <td style="padding:8px 14px;color:var(--t3)">${esc(r.note||'')}</td>
+      <td style="padding:8px 14px;color:var(--t3)">${esc(new Date(r.added_at).toLocaleDateString())}</td>
+      <td style="padding:8px 14px;text-align:right"><button onclick="removeAllowedEmail('${esc(r.email).replace(/'/g,'&#39;')}')" style="background:none;border:1px solid var(--b1);color:var(--acc);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Revoke</button></td>
+    </tr>`).join('');
+  }
+  // Admins
+  const aBody = document.getElementById('admin-tbody');
+  aBody.innerHTML = '<tr><td colspan="3" style="padding:30px;text-align:center;color:var(--t3)">Loading…</td></tr>';
+  const { data: admins, error: aErr } = await sb.from('admins').select('*').order('added_at', {ascending:false});
+  if (aErr) {
+    aBody.innerHTML = `<tr><td colspan="3" style="padding:30px;text-align:center;color:var(--acc)">${esc(aErr.message)}</td></tr>`;
+  } else {
+    aBody.innerHTML = admins.map(r => `<tr style="border-top:1px solid var(--b1)">
+      <td style="padding:8px 14px">${esc(r.email)}</td>
+      <td style="padding:8px 14px;color:var(--t3)">${esc(new Date(r.added_at).toLocaleDateString())}</td>
+      <td style="padding:8px 14px;text-align:right">${r.user_id === currentUser.id ? '<span style="font-size:11px;color:var(--t3)">(you)</span>' : `<button onclick="removeAdmin('${esc(r.user_id)}')" style="background:none;border:1px solid var(--b1);color:var(--acc);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer">Demote</button>`}</td>
+    </tr>`).join('');
+  }
+}
+
+async function addAllowedEmail() {
+  const email = document.getElementById('team-add-email').value.trim().toLowerCase();
+  const note = document.getElementById('team-add-note').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Enter a valid email'); return; }
+  const { error } = await sb.from('allowed_emails').upsert({ email, note, added_by: currentUser.email });
+  if (error) { alert('Failed: ' + error.message); return; }
+  document.getElementById('team-add-email').value = '';
+  document.getElementById('team-add-note').value = '';
+  loadTeam();
+}
+
+async function removeAllowedEmail(email) {
+  if (!confirm('Revoke access for ' + email + '?')) return;
+  const { error } = await sb.from('allowed_emails').delete().eq('email', email);
+  if (error) { alert('Failed: ' + error.message); return; }
+  loadTeam();
+}
+
+async function removeAdmin(userId) {
+  if (!confirm('Demote this admin? They\'ll keep team access but lose edit rights.')) return;
+  const { error } = await sb.from('admins').delete().eq('user_id', userId);
+  if (error) { alert('Failed: ' + error.message); return; }
+  loadTeam();
+}
+
+/* ── Wire-up ─── */
+document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); sendMagicLink(); });
+document.getElementById('resendBtn').addEventListener('click', () => showLogin('login'));
+document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session && session.user) {
+    if (currentUser && currentUser.id === session.user.id) return;   // already in
+    currentUser = session.user;
+    isAdmin = await checkIsAdmin();
+    if (!isAdmin) {
+      document.getElementById('notAdminEmail').textContent = currentUser.email;
+      showLogin('notAdmin');
+    } else {
+      showApp();
+    }
+  } else if (event === 'SIGNED_OUT') {
+    currentUser = null; isAdmin = false; showLogin('login');
+  }
+});
+
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user) {
+    currentUser = session.user;
+    isAdmin = await checkIsAdmin();
+    if (isAdmin) showApp();
+    else {
+      document.getElementById('notAdminEmail').textContent = currentUser.email;
+      showLogin('notAdmin');
+    }
+  } else {
+    showLogin('login');
+  }
+})();
 </script>
 </body>
 </html>

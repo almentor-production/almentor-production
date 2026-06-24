@@ -16,6 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <style>
 :root{--bg:#F5F5F5;--s1:#FFFFFF;--s2:#F0F0F0;--s3:#E8E8E8;--b1:#E0E0E0;--b2:#CCCCCC;--acc:#E50914;--acc2:rgba(229,9,20,0.08);--t1:#1A1A1A;--t2:#555555;--t3:#888888;--sw:220px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -194,12 +196,19 @@ input,select{font-family:'DM Sans',sans-serif}
   <form class="login-box" id="loginForm" novalidate>
     <svg class="logo-svg" viewBox="0 0 130 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M12.735 7.091h4.1v16.414h-4.1V21.5c-1.086 1.588-2.815 2.38-5.195 2.38-2.38 0-4.15-.815-5.507-2.443C.677 19.81 0 17.763 0 15.298s.677-4.512 2.033-6.14c1.356-1.629 3.19-2.443 5.507-2.443 2.318 0 4.109.795 5.195 2.38V7.091zm-1.33 11.56c.739-.877 1.111-1.992 1.111-3.35s-.37-2.474-1.112-3.35c-.739-.878-1.717-1.316-2.925-1.316-1.209 0-2.187.438-2.926 1.315-.74.877-1.112 1.996-1.112 3.35 0 1.356.37 2.474 1.112 3.351.74.877 1.714 1.315 2.926 1.315 1.21 0 2.183-.438 2.925-1.315zm12.331 4.854h-4.444V.01h4.444v23.494zm19.84-9.335v9.335h-4.444v-9.741c0-2.15-.875-3.226-2.627-3.226-1.023 0-1.808.313-2.363.94-.551.626-.83 1.494-.83 2.599v9.428h-4.444V7.09h4.1v2.004c.856-1.585 2.431-2.38 4.726-2.38 2.17 0 3.753.775 4.756 2.317 1.4-1.545 3.213-2.317 5.445-2.317 1.92 0 3.39.595 4.41 1.785 1.024 1.19 1.533 2.778 1.533 4.763v10.242h-4.444v-9.741c0-2.15-.876-3.226-2.627-3.226-1.044 0-1.837.32-2.377.957-.544.638-.814 1.531-.814 2.679v-.003zm28.862 2.412H60.55c.146 1.127.564 1.99 1.252 2.584.688.596 1.595.892 2.72.892.709 0 1.351-.151 1.925-.453a2.635 2.635 0 001.237-1.332h4.476c-.48 1.67-1.425 3.023-2.832 4.056-1.408 1.034-3.051 1.552-4.928 1.552-2.42 0-4.401-.803-5.945-2.412-1.544-1.608-2.314-3.675-2.314-6.202 0-2.528.77-4.481 2.314-6.11 1.544-1.628 3.514-2.442 5.914-2.442s4.353.809 5.866 2.429c1.512 1.62 2.269 3.66 2.269 6.123l-.063 1.315h-.003zm-8.103-6.294c-1 0-1.825.276-2.47.831-.646.552-1.064 1.31-1.252 2.272h7.447c-.168-.94-.575-1.691-1.22-2.255-.648-.563-1.481-.845-2.502-.845l-.003-.003zM79.06 7.091v2.004c.856-1.585 2.482-2.38 4.882-2.38 1.939 0 3.432.59 4.475 1.77 1.044 1.182 1.564 2.774 1.564 4.778v10.242h-4.444v-9.741c0-2.15-.93-3.226-2.787-3.226-1.063 0-1.887.32-2.47.957-.583.638-.876 1.509-.876 2.616v9.397H74.96V7.09h4.1zm36.84 14.302c-1.587 1.66-3.659 2.49-6.227 2.49-2.567 0-4.64-.83-6.227-2.49-1.586-1.66-2.377-3.692-2.377-6.092 0-2.4.794-4.432 2.377-6.092 1.584-1.66 3.66-2.49 6.227-2.49 2.568 0 4.64.83 6.227 2.49 1.584 1.66 2.377 3.692 2.377 6.092 0 2.4-.793 4.432-2.377 6.092zm-9.212-9.508c-.782.837-1.175 1.973-1.175 3.413 0 1.44.393 2.58 1.175 3.413.782.834 1.777 1.253 2.988 1.253s2.206-.419 2.988-1.253c.782-.834 1.174-1.973 1.174-3.413 0-1.44-.392-2.579-1.174-3.413-.782-.834-1.78-1.253-2.988-1.253s-2.206.419-2.988 1.253zM130 6.966v4.167a4.483 4.483 0 00-.876-.094c-1.314 0-2.3.345-2.957 1.034-.657.689-.987 1.776-.987 3.256v8.176h-4.444V7.09h4.1v2.13c.939-1.524 2.482-2.286 4.632-2.286l.532.03zM98.15 20.744c-1.212 0-1.268-.68-1.268-1.956l.022-7.74h2.389V7.54h-2.409V3.467H92.44v7.58l.003 8.162c0 3.197 1.291 4.794 4.461 4.794.814 0 1.922-.063 2.403-.188V20.59c-.356.105-.74.156-1.157.156v-.002z"/><path fill="#E50914" d="M53.837 0H28.87v2.946h24.967V0z"/></svg>
     <div class="logo-sub">MEDIA VAULT</div>
-    <h2 id="loginHeading">Team Access</h2>
-    <p>Enter the access code to browse production assets</p>
-    <label for="loginPass" class="sr-only">Access code</label>
-    <input class="login-input" id="loginPass" name="pass" type="password" placeholder="Access Code" autocomplete="current-password" aria-describedby="loginErr" required>
-    <button class="login-btn" type="submit">Enter</button>
-    <div class="login-error" id="loginErr" role="alert" aria-live="polite"></div>
+    <div id="loginView">
+      <h2 id="loginHeading">Team Sign-In</h2>
+      <p>Enter your work email — we'll send you a one-time sign-in link.</p>
+      <label for="loginEmail" class="sr-only">Work email</label>
+      <input class="login-input" id="loginEmail" name="email" type="email" placeholder="you@almentor.com" autocomplete="email" inputmode="email" aria-describedby="loginErr" required style="letter-spacing:0;text-align:left">
+      <button class="login-btn" type="submit" id="loginBtn">Send sign-in link</button>
+      <div class="login-error" id="loginErr" role="alert" aria-live="polite"></div>
+    </div>
+    <div id="sentView" style="display:none">
+      <h2>Check your inbox</h2>
+      <p>We sent a sign-in link to <strong id="sentEmail"></strong>. Click it on this device to continue. The link expires in 1 hour.</p>
+      <button class="login-btn" type="button" id="resendBtn" style="background:#666">Use a different email</button>
+    </div>
   </form>
 </div>
 
@@ -358,10 +367,16 @@ const THUMB_CLASS = {
   'Promos':'thumb-promo','AI Videos':'thumb-ai','Showreel':'thumb-show'
 };
 const ALL_CATS = Object.keys(CAT_CLASS);
-const DATA_URL = 'https://raw.githubusercontent.com/almentor-production/almentor-production/main/data.json';
+
+if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || /YOUR-PROJECT-REF|YOUR_PUBLIC_ANON_KEY/.test(window.SUPABASE_URL + window.SUPABASE_ANON_KEY)) {
+  document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif"><h2>Setup needed</h2><p>Edit <code>config.js</code> and paste your Supabase URL and anon key.</p></div>';
+  throw new Error('Missing Supabase config in config.js');
+}
+const sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
 let data = [], activeCat = 'all', activeYr = 'all';
 let lastFocused = null;
+let currentUser = null;       // Supabase user once signed in
 
 /* ── Helpers ─── */
 function esc(s) {
@@ -379,114 +394,85 @@ function safeUrl(u) {
   return '';
 }
 
-/* ── Load data from cloud (same source as Admin) ─── */
+/* ── Supabase data layer ─── */
+async function logEvent(type, asset) {
+  if (!currentUser) return;
+  try {
+    const { error } = await sb.from('events').insert({
+      event_type: type,
+      user_email: currentUser.email,
+      user_id: currentUser.id,
+      asset_id: asset ? asset.id : null,
+      asset_title: asset ? (asset.title || '').slice(0, 200) : null,
+      user_agent: (navigator.userAgent || '').slice(0, 500),
+    });
+    if (error) console.warn('logEvent failed:', error.message);
+  } catch(e) { console.warn('logEvent error:', e); }
+}
+
 async function load() {
-  let loaded = false;
-  let source = '';
-
-  // Get localStorage data first (may have admin's unsaved changes)
-  let localData = [];
   try {
-    const r = localStorage.getItem('mv-assets');
-    if (r) localData = JSON.parse(r);
-  } catch(e) {}
-  const adminDirty = localStorage.getItem('mv-dirty') === '1';
-
-  // Strategy 1: GitHub raw URL (published data)
-  let ghData = [];
-  try {
-    const resp = await fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'});
-    if (resp.ok) {
-      ghData = await resp.json();
+    const { data: rows, error } = await sb.from('assets').select('*').order('year', {ascending:false});
+    if (error) throw error;
+    if (rows.length === 0) {
+      // Could be either an empty catalogue, or RLS blocked us because the
+      // email isn't in allowed_emails. Probe with a count to distinguish.
+      const { count } = await sb.from('assets').select('id', {count:'exact', head:true});
+      if (count === 0) {
+        showAccessDenied();
+        data = [];
+        return;
+      }
     }
-  } catch(e) {}
-
-  // Smart merge: use whichever has more items, or local if admin has unsaved work
-  if (ghData.length > 0 && localData.length > 0) {
-    if (adminDirty || localData.length > ghData.length) {
-      // Admin has unsaved changes — use local data (don't overwrite!)
-      data = localData;
-      loaded = true;
-      source = 'local+cloud';
-    } else {
-      // GitHub is up-to-date — use it and sync to localStorage
-      data = ghData;
-      loaded = true;
-      source = 'cloud';
-      try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
-    }
-  } else if (ghData.length > 0) {
-    data = ghData;
-    loaded = true;
-    source = 'cloud';
-    try { localStorage.setItem('mv-assets', JSON.stringify(data)); } catch(e) {}
-  } else if (localData.length > 0) {
-    data = localData;
-    loaded = true;
-    source = 'local';
+    // Map descr -> desc for the existing render code, which expects v.desc
+    data = rows.map(r => ({ ...r, desc: r.descr }));
+  } catch(e) {
+    console.error('Failed to load assets:', e);
+    document.getElementById('fatalErr').classList.add('show');
+    data = [];
   }
-
-  // Strategy 3: local data.json file fallback
-  if (!loaded) {
-    try {
-      const resp2 = await fetch('data.json?t=' + Date.now());
-      if (resp2.ok) { data = await resp2.json(); loaded = true; source = 'file'; }
-    } catch(e2) {}
-  }
-
-  if (!loaded) data = [];
+  // Clean up legacy plaintext caches from older versions.
+  try { localStorage.removeItem('mv-assets'); localStorage.removeItem('mv-dirty'); localStorage.removeItem('mv-auth'); sessionStorage.removeItem('mv-auth'); } catch(_) {}
 
   loadBanner();
   buildYearChips();
   updateBadges();
   render();
+}
 
-  // Show sync indicator
-  if (source === 'local') {
-    showSyncNote('Showing local data — not synced from cloud yet');
-  } else if (source === 'local+cloud') {
-    showSyncNote('Showing latest data (includes admin changes not yet published)');
+function showAccessDenied() {
+  const grid = document.getElementById('grid');
+  if (grid) {
+    grid.innerHTML = `<div class="empty" style="padding:80px 20px"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg><p style="margin-top:14px"><strong>Access not granted yet</strong><br>Your email isn't on the team allowlist.<br>Please contact production to be added.</p><p style="margin-top:14px;font-size:11px"><a href="#" id="signOutLink" style="color:#E50914">Sign out</a></p></div>`;
+    const link = document.getElementById('signOutLink');
+    if (link) link.onclick = async (e) => { e.preventDefault(); await sb.auth.signOut(); location.reload(); };
   }
 }
 
-function showSyncNote(msg) {
-  let el = document.getElementById('sync-note');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'sync-note';
-    el.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-size:11px;font-weight:500;z-index:999;background:#FFF7ED;color:#F59E0B;border:1px solid #F59E0B;box-shadow:0 2px 8px rgba(0,0,0,.1)';
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .5s'; }, 5000);
-}
-
-function loadBanner() {
-  // Check if there's a _banner config in the data (object with id === '_banner')
-  const cfg = data.find(v => v.id === '_banner');
+async function loadBanner() {
   const hero = document.getElementById('heroBanner');
   if (!hero) return;
-  const bannerUrl = cfg ? cfg.url : '';
-  if (bannerUrl) {
-    // Replace placeholder with actual image
+  let cfg = {};
+  try {
+    const { data: row } = await sb.from('settings').select('value').eq('key','banner').maybeSingle();
+    if (row && row.value) cfg = row.value;
+  } catch(e) { console.warn('banner load failed:', e); }
+  if (cfg.url) {
     const placeholder = hero.querySelector('.hero-placeholder');
     if (placeholder) {
       const img = document.createElement('img');
       img.className = 'hero-img';
-      img.src = bannerUrl;
+      img.src = cfg.url;
       img.alt = 'Production Library Banner';
       img.onerror = function() { this.style.display = 'none'; };
       placeholder.replaceWith(img);
     }
-    // Remove _banner from visible data
-    data = data.filter(v => v.id !== '_banner');
   }
-  // Update text if provided
-  if (cfg && cfg.title) {
+  if (cfg.title) {
     const t = hero.querySelector('.hero-title');
     if (t) t.textContent = cfg.title;
   }
-  if (cfg && cfg.subtitle) {
+  if (cfg.subtitle) {
     const s = hero.querySelector('.hero-sub');
     if (s) s.textContent = cfg.subtitle;
   }
@@ -590,8 +576,8 @@ function render() {
         <div class="cfoot">
           <span class="yr">${esc(v.year)}</span>
           <div class="cfoot-actions">
-            ${safeLink ? `<a class="dl-btn" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer" title="Download / Open"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a>` : ''}
-            <button class="copy-btn" type="button" data-link="${esc(safeLink)}" ${safeLink ? '' : 'disabled'}>
+            ${safeLink ? `<a class="dl-btn" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer" data-id="${esc(v.id)}" title="Download / Open"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</a>` : ''}
+            <button class="copy-btn" type="button" data-link="${esc(safeLink)}" data-id="${esc(v.id)}" ${safeLink ? '' : 'disabled'}>
               <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
               Link
             </button>
@@ -601,7 +587,15 @@ function render() {
     </div>`;
   }).join('');
   grid.querySelectorAll('.thumb[data-id]').forEach(el => el.addEventListener('click', () => previewAsset(Number(el.dataset.id))));
-  grid.querySelectorAll('.copy-btn[data-link]').forEach(btn => btn.addEventListener('click', () => copyLink(btn.dataset.link, btn)));
+  grid.querySelectorAll('.copy-btn[data-link]').forEach(btn => btn.addEventListener('click', () => {
+    const asset = data.find(v => String(v.id) === btn.dataset.id);
+    copyLink(btn.dataset.link, btn);
+    if (asset) logEvent('copy_link', asset);
+  }));
+  grid.querySelectorAll('.dl-btn[data-id]').forEach(a => a.addEventListener('click', () => {
+    const asset = data.find(v => String(v.id) === a.dataset.id);
+    if (asset) logEvent('download', asset);
+  }));
 }
 
 /* ── Auto-detect thumbnail from video link ─── */
@@ -689,8 +683,10 @@ function previewAsset(id) {
   tagsEl.style.display = tagArr.length ? 'flex' : 'none';
   const dlWrap = document.getElementById('preview-dl-wrap');
   dlWrap.innerHTML = safeLink
-    ? `<a class="preview-dl" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Open Asset</a>`
+    ? `<a class="preview-dl" id="preview-dl-link" href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Open Asset</a>`
     : '';
+  const preBtn = document.getElementById('preview-dl-link');
+  if (preBtn) preBtn.addEventListener('click', () => logEvent('download', item));
   const pbg = document.getElementById('pbg');
   pbg.classList.add('open');
   pbg.setAttribute('aria-hidden', 'false');
@@ -705,83 +701,93 @@ function closePreview() {
   if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
 }
 
-/* ── LOGIN GATE ─── */
-// SHA-256 hash of access code "almentor2025"
-const PASS_HASH = 'd8c2a00be9ea7943df28632340db5858269507f17a1e34814ebcf24c4cc27951';
-const SESSION_KEY = 'mv-auth';
-const SESSION_HOURS = 8;
-
-async function hashStr(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
-}
-
-function isLoggedIn() {
-  try {
-    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY));
-    if (!s) return false;
-    if (Date.now() - s.ts > SESSION_HOURS * 3600000) { sessionStorage.removeItem(SESSION_KEY); return false; }
-    return true;
-  } catch(e) { return false; }
-}
+/* ── Auth: Supabase Magic Link ─── */
 
 function showApp() {
   document.getElementById('loginOverlay').classList.add('hidden');
   document.querySelector('.sidebar').style.display = '';
   document.querySelector('.main').style.display = '';
-  document.getElementById('search').focus();
+  const s = document.getElementById('search'); if (s) s.focus();
   load();
 }
 
-async function doLogin() {
-  const passEl = document.getElementById('loginPass');
-  const errEl = document.getElementById('loginErr');
-  const btn = document.querySelector('.login-btn');
-  const pass = passEl.value;
+function showLogin() {
+  document.querySelector('.sidebar').style.display = 'none';
+  document.querySelector('.main').style.display = 'none';
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginView').style.display = '';
+  document.getElementById('sentView').style.display = 'none';
+  const e = document.getElementById('loginEmail'); if (e) e.focus();
+}
+
+async function sendMagicLink() {
+  const emailEl = document.getElementById('loginEmail');
+  const errEl   = document.getElementById('loginErr');
+  const btn     = document.getElementById('loginBtn');
   errEl.textContent = '';
-  if (!pass) { errEl.textContent = 'Please enter the access code'; passEl.focus(); return; }
+  const email = (emailEl.value || '').trim().toLowerCase();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    emailEl.focus(); return;
+  }
   btn.disabled = true;
+  btn.textContent = 'Sending…';
   try {
-    const hash = await hashStr(pass);
-    if (hash === PASS_HASH) {
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ts: Date.now()}));
-      showApp();
-    } else {
-      errEl.textContent = 'Wrong access code. Ask your admin for access.';
-      passEl.classList.add('error');
-      setTimeout(() => passEl.classList.remove('error'), 400);
-      passEl.select();
-    }
+    const redirectTo = window.location.href.split('#')[0];
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
+    if (error) throw error;
+    document.getElementById('sentEmail').textContent = email;
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('sentView').style.display = '';
   } catch(e) {
-    errEl.textContent = 'Login failed: ' + (e.message || 'try again');
+    errEl.textContent = 'Couldn\'t send link: ' + (e.message || 'try again');
+    emailEl.classList.add('error');
+    setTimeout(() => emailEl.classList.remove('error'), 400);
   } finally {
     btn.disabled = false;
+    btn.textContent = 'Send sign-in link';
   }
 }
 
 /* ── Wire-up on DOM ready ─── */
-document.addEventListener('DOMContentLoaded', () => {
-  // sidebar buttons
+document.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('.ni[data-cat]').forEach(b => b.addEventListener('click', () => setCat(b.dataset.cat)));
-  // controls
   document.getElementById('search').addEventListener('input', render);
   document.getElementById('sortSel').addEventListener('change', render);
-  // modal
   document.getElementById('preview-close-btn').addEventListener('click', closePreview);
   document.getElementById('pbg').addEventListener('click', e => { if (e.target === e.currentTarget) closePreview(); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && document.getElementById('pbg').classList.contains('open')) closePreview();
   });
-  // login form
-  document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); doLogin(); });
+  document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); sendMagicLink(); });
+  document.getElementById('resendBtn').addEventListener('click', () => {
+    document.getElementById('sentView').style.display = 'none';
+    document.getElementById('loginView').style.display = '';
+    const em = document.getElementById('loginEmail'); em.value = ''; em.focus();
+  });
 
-  if (isLoggedIn()) {
+  // React to sign-in / sign-out (also fires after a magic link redirect)
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session && session.user) {
+      const isNew = !currentUser || currentUser.id !== session.user.id;
+      currentUser = session.user;
+      if (isNew) {
+        logEvent('login');           // RLS will reject if email not in allowlist; that's fine.
+        showApp();
+      }
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      showLogin();
+    }
+  });
+
+  // Initial session check (covers reload with valid cookie/local-storage session)
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user) {
+    currentUser = session.user;
     showApp();
   } else {
-    document.querySelector('.sidebar').style.display = 'none';
-    document.querySelector('.main').style.display = 'none';
-    document.getElementById('loginOverlay').classList.remove('hidden');
-    document.getElementById('loginPass').focus();
+    showLogin();
   }
 });
 </script>
