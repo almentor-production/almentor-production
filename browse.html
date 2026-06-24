@@ -79,12 +79,12 @@ input,select{font-family:'DM Sans',sans-serif}
 .thumb-bg{position:absolute;inset:0;opacity:.18;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.4) 0%, transparent 60%)}
 
 /* ── HERO BANNER ─────── */
-.hero{position:relative;width:100%;height:220px;overflow:hidden;border-bottom:1px solid var(--b1)}
+.hero{position:relative;width:100%;height:380px;overflow:hidden;border-bottom:1px solid var(--b1)}
 .hero-img{width:100%;height:100%;object-fit:cover;display:block}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.55) 100%)}
-.hero-content{position:absolute;bottom:0;left:0;right:0;padding:24px 30px;color:#fff}
-.hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
-.hero-sub{font-size:13px;opacity:.85;font-weight:300;text-shadow:0 1px 6px rgba(0,0,0,.3)}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:36px 40px;color:#fff}
+.hero-title{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;margin-bottom:8px;text-shadow:0 2px 16px rgba(0,0,0,.5);line-height:1.1}
+.hero-sub{font-size:16px;opacity:.9;font-weight:300;text-shadow:0 1px 8px rgba(0,0,0,.4)}
 .hero-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#0f0f0f 0%,#1a1a2e 40%,#0f3460 100%);display:flex;align-items:center;justify-content:center}
 .hero-placeholder svg{opacity:.2;width:60px;height:60px}
 
@@ -598,13 +598,18 @@ function render() {
   }));
 }
 
-/* ── Auto-detect thumbnail from video link ─── */
+/* ── Auto-detect thumbnail from video link (YouTube / Vimeo / Google Drive) ─── */
 function extractThumbFromLink(link) {
   if (!link || link === '#') return '';
   let m = link.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
   if (m) return 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg';
   m = link.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if (m) return 'https://vumbnail.com/' + m[1] + '.jpg';
+  // Google Drive — requires the file to be shared publicly ("Anyone with the link can view")
+  m = link.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w640';
+  m = link.match(/drive\.google\.com\/.*[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w640';
   return '';
 }
 
