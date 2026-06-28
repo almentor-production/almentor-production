@@ -744,7 +744,9 @@ function previewAsset(id) {
   document.getElementById('preview-title').textContent = item.title || '';
   const body = document.getElementById('preview-body');
   if (embedUrl) {
-    body.innerHTML = `<iframe class="preview-frame" src="${esc(embedUrl)}" allowfullscreen allow="autoplay; encrypted-media" referrerpolicy="no-referrer" title="${esc(item.title||'Asset preview')}"></iframe>`;
+    // Drive / YouTube / Vimeo embed. NOTE: do NOT set referrerpolicy="no-referrer"
+    // — Google Drive needs the referrer to permit the iframe.
+    body.innerHTML = `<iframe class="preview-frame" src="${esc(embedUrl)}" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" title="${esc(item.title||'Asset preview')}"></iframe>${safeLink ? `<div style="padding:8px 18px 0;font-size:11px;color:#888;text-align:center">If the player shows "Access denied" or stays blank, open the file in Drive and set sharing to <strong>"Anyone with the link"</strong>, or <a href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer" style="color:#E50914">open it in a new tab →</a></div>` : ''}`;
   } else {
     body.innerHTML = `<div class="preview-nolink"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><p style="margin-top:12px">No embeddable preview.<br>${safeLink ? 'Use the link below to open the asset.' : 'Contact production to get the link.'}</p>${safeLink ? `<a href="${esc(safeLink)}" target="_blank" rel="noopener noreferrer" style="color:#E50914;margin-top:10px;display:inline-block;font-size:12px">Open link in new tab →</a>` : ''}</div>`;
   }
